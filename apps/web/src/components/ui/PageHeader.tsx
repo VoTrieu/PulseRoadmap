@@ -21,7 +21,7 @@ function PageHeader({ action, eyebrow, subtitle, title }: PageHeaderProps) {
       </div>
       {action ? (
         <Button
-          className="min-h-11 gap-2 rounded-lg border-teal-700 bg-teal-700 px-4 font-bold shadow-lg shadow-teal-900/15 [&_.p-button-icon-left]:m-0"
+          className="min-h-11 border-teal-700 bg-teal-700 px-4 font-bold shadow-lg shadow-teal-900/15"
           icon={action.icon}
           label={action.label}
         />

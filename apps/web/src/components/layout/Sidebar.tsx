@@ -34,7 +34,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
           <Button
             aria-label="Close navigation"
-            className="h-9 w-9 text-slate-500 [&_.p-button-icon-left]:m-0 lg:hidden"
+            className="h-9 w-9 text-slate-500 lg:hidden"
             icon="pi pi-times"
             onClick={onClose}
             text
@@ -47,7 +47,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             <NavLink key={item.id} to={item.path}>
               {({ isActive }) => (
                 <Button
-                  className={`min-h-12 w-full justify-start gap-3 rounded-lg border-0 px-4 py-3 text-left font-bold shadow-none [&_.p-button-icon-left]:m-0 [&_.p-button-label]:flex-none [&_.p-button-label]:text-base ${
+                  className={`min-h-12 w-full justify-start gap-3 border-0 text-left shadow-none ${
                     isActive ? "bg-teal-50 text-teal-950" : "bg-transparent text-slate-600 hover:bg-slate-100"
                   }`}
                   icon={item.icon}

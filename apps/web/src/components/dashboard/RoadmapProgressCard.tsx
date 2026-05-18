@@ -20,7 +20,7 @@ function RoadmapProgressCard({ items }: RoadmapProgressCardProps) {
               <span className="text-sm text-slate-500">{item.status}</span>
             </div>
             <ProgressBar
-              className="h-2 rounded-full bg-slate-200 [&_.p-progressbar-value]:bg-teal-500"
+              className="h-2"
               value={item.progress}
               showValue={false}
             />

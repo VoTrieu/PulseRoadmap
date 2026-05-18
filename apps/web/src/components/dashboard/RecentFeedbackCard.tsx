@@ -38,9 +38,9 @@ function RecentFeedbackCard({ feedback }: RecentFeedbackCardProps) {
       subTitle="Prioritized customer requests"
     >
       <DataTable
-        className="[&_.p-datatable-tbody>tr]:border-t [&_.p-datatable-tbody>tr]:border-slate-100 [&_.p-datatable-tbody>tr>td]:border-0 [&_.p-datatable-tbody>tr>td]:px-3 [&_.p-datatable-tbody>tr>td]:py-2.5 [&_.p-datatable-tbody>tr>td]:text-sm [&_.p-datatable-tbody>tr>td]:leading-snug [&_.p-datatable-tbody>tr>td]:text-slate-700 [&_.p-datatable-thead>tr>th]:border-0 [&_.p-datatable-thead>tr>th]:bg-slate-50 [&_.p-datatable-thead>tr>th]:px-3 [&_.p-datatable-thead>tr>th]:py-2.5 [&_.p-datatable-thead>tr>th]:text-xs [&_.p-datatable-thead>tr>th]:font-extrabold [&_.p-datatable-thead>tr>th]:uppercase [&_.p-datatable-thead>tr>th]:text-slate-600 [&_.p-datatable-thead>tr>th]:whitespace-nowrap [&_.p-datatable-wrapper]:overflow-x-auto"
         value={feedback}
         size="small"
+        stripedRows
       >
         <Column field="request" header="Request" style={{ minWidth: "18rem" }} />
         <Column field="customer" header="Customer" style={{ minWidth: "11rem" }} />

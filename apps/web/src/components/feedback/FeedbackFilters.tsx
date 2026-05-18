@@ -11,7 +11,7 @@ function FeedbackFilters() {
       <div className="flex min-h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">
         <i className="pi pi-search shrink-0 text-base text-slate-500" aria-hidden="true" />
         <InputText
-          className="w-full border-0! p-0! shadow-none! outline-none"
+          className="w-full border-none p-0 shadow-none"
           placeholder="Search customer, request, source..."
         />
       </div>
@@ -26,7 +26,7 @@ function FeedbackFilters() {
         value={urgencyOptions[0]}
       />
       <Button
-        className="min-h-11 gap-2 rounded-lg border-slate-300 px-4 font-bold text-slate-700 [&_.p-button-icon-left]:m-0"
+        className="min-h-11 border-slate-300 px-4 font-bold text-slate-700"
         icon="pi pi-filter"
         label="Filters"
         outlined

@@ -28,7 +28,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       shadow-sm md:flex-row md:items-center">
       <Button
         aria-label="Toggle navigation"
-        className="h-11 w-11 text-slate-700 [&_.p-button-icon-left]:m-0"
+        className="h-11 w-11 text-slate-700"
         icon="pi pi-bars"
         onClick={onMenuClick}
         text
@@ -36,7 +36,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       />
 
       <AppDropdown
-        className="w-full md:w-60"
+        className="h-11 w-full md:w-60"
         itemTemplate={workspaceOptionTemplate}
         optionLabel="name"
         options={workspaces}
@@ -44,10 +44,10 @@ export function Header({ onMenuClick }: HeaderProps) {
         onChange={(e) => setSelectedWorkspace(e.value)}
       />
 
-      <div className="flex min-h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">
+      <div className="flex h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">
         <i className="pi pi-search shrink-0 text-base text-slate-500" aria-hidden="true" />
         <InputText
-          className="w-full border-0! p-0! shadow-none! outline-none"
+          className="h-full w-full border-none p-0 shadow-none"
           placeholder="Search feedback, features, releases..."
         />
       </div>
@@ -55,7 +55,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       <div className="flex items-center gap-3">
         <Button
           aria-label="Notifications"
-          className="h-11 w-11 text-slate-700 [&_.p-button-icon-left]:m-0"
+          className="h-11 w-11 text-slate-700"
           icon="pi pi-bell"
           text
           rounded
