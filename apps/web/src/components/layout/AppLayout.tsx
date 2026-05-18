@@ -1,14 +1,10 @@
-import type { ReactNode } from "react";
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { AppFooter } from "./AppFooter";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 
-type AppLayoutProps = {
-  children: ReactNode;
-};
-
-function AppLayout({ children }: AppLayoutProps) {
+function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   function closeSidebar() {
@@ -17,7 +13,10 @@ function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-slate-100 font-sans text-slate-900 lg:flex">
-      <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={closeSidebar}
+      />
       {isSidebarOpen ? (
         <button
           aria-label="Close navigation"
@@ -29,7 +28,7 @@ function AppLayout({ children }: AppLayoutProps) {
       <div className="flex min-w-0 flex-1 flex-col transition-[margin,width] duration-300 ease-out">
         <main className="mx-auto min-w-0 w-full max-w-420 flex-1 px-4 py-5 sm:px-7">
           <Header onMenuClick={() => setIsSidebarOpen((current) => !current)} />
-          {children}
+          <Outlet />
         </main>
         <AppFooter />
       </div>

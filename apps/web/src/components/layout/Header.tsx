@@ -1,8 +1,8 @@
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
+import { AppDropdown } from "../ui/AppDropdown";
 
 const workspaces = [
   { name: "Acme Cloud", code: "acme" },
@@ -35,15 +35,11 @@ export function Header({ onMenuClick }: HeaderProps) {
         rounded
       />
 
-      <Dropdown
-        className="min-h-11 w-full rounded-lg border-slate-300 shadow-none md:w-60 
-        [&_.p-dropdown-label]:flex [&_.p-dropdown-label]:items-center [&_.p-dropdown-label]:py-2.5 
-        [&_.p-dropdown-label]:font-semibold [&_.p-dropdown-label]:text-slate-700 
-        [&_.p-dropdown-trigger]:text-slate-500"
+      <AppDropdown
+        className="w-full md:w-60"
         itemTemplate={workspaceOptionTemplate}
         optionLabel="name"
         options={workspaces}
-        panelClassName="mt-2 overflow-hidden rounded-lg border border-slate-200 bg-white p-1 shadow-xl [&_.p-dropdown-item.p-focus]:!bg-slate-100 [&_.p-dropdown-item.p-highlight]:!bg-teal-50 [&_.p-dropdown-item.p-highlight]:!text-teal-900 [&_.p-dropdown-item]:rounded-md [&_.p-dropdown-item]:px-3 [&_.p-dropdown-item]:py-2.5 [&_.p-dropdown-item]:outline-none [&_.p-dropdown-item]:transition-colors [&_.p-dropdown-item]:hover:!bg-slate-100 [&_.p-dropdown-items]:p-0"
         value={selectedWorkspace}
         onChange={(e) => setSelectedWorkspace(e.value)}
       />
