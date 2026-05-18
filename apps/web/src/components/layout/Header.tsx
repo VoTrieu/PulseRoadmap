@@ -16,12 +16,25 @@ function workspaceOptionTemplate(option: Workspace) {
   return <span className="block text-sm font-semibold text-slate-700">{option.name}</span>;
 }
 
-export function Header() {
+type HeaderProps = {
+  onMenuClick: () => void;
+};
+
+export function Header({ onMenuClick }: HeaderProps) {
   const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]);
 
   return (
     <header className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 
       shadow-sm md:flex-row md:items-center">
+      <Button
+        aria-label="Toggle navigation"
+        className="h-11 w-11 text-slate-700 [&_.p-button-icon-left]:m-0"
+        icon="pi pi-bars"
+        onClick={onMenuClick}
+        text
+        rounded
+      />
+
       <Dropdown
         className="min-h-11 w-full rounded-lg border-slate-300 shadow-none md:w-60 
         [&_.p-dropdown-label]:flex [&_.p-dropdown-label]:items-center [&_.p-dropdown-label]:py-2.5 
