@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:18
+    container_name: pulseroadmap-db
+    environment:
+      POSTGRES_DB: pulseroadmap
+      POSTGRES_USER: pulseroadmap
+      POSTGRES_PASSWORD: pulseroadmap
+    ports:
+      - "5433:5432"
+    volumes:
+      - pulseroadmap_postgres18_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pulseroadmap -d pulseroadmap"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pulseroadmap_postgres18_data:
