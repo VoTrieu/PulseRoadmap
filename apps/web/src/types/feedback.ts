@@ -15,6 +15,18 @@ type FeedbackInboxItem = {
   receivedAt: string;
 };
 
+type FeedbackCreateInput = {
+  customer: string;
+  request: string;
+  productArea: string;
+  sentiment: FeedbackSentiment;
+  tier: CustomerTier;
+  urgency: FeedbackUrgency;
+  source: string;
+  linkedFeature: string;
+  receivedAt: string;
+};
+
 type FeedbackSummary = {
   label: string;
   value: string;
@@ -24,6 +36,7 @@ type FeedbackSummary = {
 
 export type {
   CustomerTier,
+  FeedbackCreateInput,
   FeedbackInboxItem,
   FeedbackSentiment,
   FeedbackSummary,

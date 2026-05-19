@@ -1,5 +1,9 @@
-import { mapFeedbackApiItemsToInboxItems } from "../mappers/feedbackMapper";
-import type { FeedbackInboxItem } from "../types/feedback";
+import {
+  mapFeedbackApiItemToInboxItem,
+  mapFeedbackApiItemsToInboxItems,
+  mapFeedbackCreateInputToApiPayload,
+} from "../mappers/feedbackMapper";
+import type { FeedbackCreateInput, FeedbackInboxItem } from "../types/feedback";
 import type { FeedbackApiItem } from "../types/feedbackApi";
 import { apiClient } from "./apiClient";
 
@@ -9,4 +13,13 @@ async function getFeedback(): Promise<FeedbackInboxItem[]> {
   return mapFeedbackApiItemsToInboxItems(response.data);
 }
 
-export { getFeedback };
+async function createFeedback(input: FeedbackCreateInput): Promise<FeedbackInboxItem> {
+  const response = await apiClient.post<FeedbackApiItem>(
+    "/feedback",
+    mapFeedbackCreateInputToApiPayload(input),
+  );
+
+  return mapFeedbackApiItemToInboxItem(response.data);
+}
+
+export { createFeedback, getFeedback };

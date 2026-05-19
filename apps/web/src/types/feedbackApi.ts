@@ -13,4 +13,16 @@ type FeedbackApiItem = {
   received_at: string;
 };
 
-export type { FeedbackApiItem };
+type FeedbackCreateApiPayload = {
+  customer: string;
+  request: string;
+  product_area: string;
+  sentiment: FeedbackSentiment;
+  tier: CustomerTier;
+  urgency: FeedbackUrgency;
+  source: string;
+  linked_feature: string;
+  received_at: string;
+};
+
+export type { FeedbackApiItem, FeedbackCreateApiPayload };
