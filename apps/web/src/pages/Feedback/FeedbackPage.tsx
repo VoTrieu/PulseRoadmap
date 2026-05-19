@@ -1,4 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { AddFeedbackDialog } from "../../components/feedback/AddFeedbackDialog";
 import { FeedbackFilters } from "../../components/feedback/FeedbackFilters";
 import { FeedbackInboxTable } from "../../components/feedback/FeedbackInboxTable";
 import { FeedbackSummaryGrid } from "../../components/feedback/FeedbackSummaryGrid";
@@ -6,23 +7,30 @@ import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { feedbackSummaries } from "../../data/feedbackSampleData";
-import { getFeedback } from "../../services/feedbackApi";
+import { useCreateFeedback, useFeedbackList } from "../../queries/feedbackQueries";
+import type { FeedbackCreateInput } from "../../types/feedback";
 
 function FeedbackPage() {
+  const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
   const {
     data: feedback = [],
     isError,
     isLoading,
     refetch,
-  } = useQuery({
-    queryKey: ["feedback"],
-    queryFn: getFeedback,
-  });
+  } = useFeedbackList();
+  const createFeedbackMutation = useCreateFeedback();
+
+  function handleCreateFeedback(input: FeedbackCreateInput) {
+    createFeedbackMutation.mutate(input, {
+      onSuccess: () => setIsAddDialogVisible(false),
+    });
+  }
 
   return (
     <>
       <PageHeader
         action={{ icon: "pi pi-plus", label: "Add feedback" }}
+        onAction={() => setIsAddDialogVisible(true)}
         eyebrow="Feedback"
         subtitle="Triage customer requests, identify duplicate themes, and link feedback to roadmap work."
         title="Customer feedback inbox"
@@ -44,6 +52,13 @@ function FeedbackPage() {
           <FeedbackInboxTable feedback={feedback} />
         )}
       </section>
+
+      <AddFeedbackDialog
+        isSubmitting={createFeedbackMutation.isPending}
+        onHide={() => setIsAddDialogVisible(false)}
+        onSubmit={handleCreateFeedback}
+        visible={isAddDialogVisible}
+      />
     </>
   );
 }

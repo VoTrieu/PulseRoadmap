@@ -7,11 +7,12 @@ type PageHeaderProps = {
     label: string;
   };
   eyebrow: string;
+  onAction?: () => void;
   subtitle?: ReactNode;
   title: string;
 };
 
-function PageHeader({ action, eyebrow, subtitle, title }: PageHeaderProps) {
+function PageHeader({ action, eyebrow, onAction, subtitle, title }: PageHeaderProps) {
   return (
     <section className="flex flex-col gap-4 py-8 md:flex-row md:items-end md:justify-between">
       <div>
@@ -24,6 +25,7 @@ function PageHeader({ action, eyebrow, subtitle, title }: PageHeaderProps) {
           className="min-h-11 border-teal-700 bg-teal-700 px-4 font-bold shadow-lg shadow-teal-900/15"
           icon={action.icon}
           label={action.label}
+          onClick={onAction}
         />
       ) : null}
     </section>
