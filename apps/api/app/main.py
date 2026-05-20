@@ -1,14 +1,23 @@
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager  
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import feedback, health
 from app.core.config import settings
+from app.data.db.init_db import init_db
 
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    init_db()
+    yield
 
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.app_name,
         version=settings.app_version,
+        lifespan=lifespan,
     )
 
     app.add_middleware(
