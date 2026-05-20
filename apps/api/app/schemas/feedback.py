@@ -26,3 +26,5 @@ class FeedbackItem(BaseModel):
     source: str
     linked_feature: str
     received_at: str
+    #Allow converting SQLAlchemy model objects into API response objects.
+    model_config = {"from_attributes": True}
