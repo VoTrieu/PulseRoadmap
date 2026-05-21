@@ -12,6 +12,12 @@ def list_feedbacks(db: Session) -> list[Feedback]:
     )
     return list(db.scalars(statements))
 
+def get_feedback_by_id(db: Session, feedback_id: str) -> Feedback | None:
+    # return db.get(Feedback, feedback_id)
+    statements = select(Feedback).where(Feedback.id == feedback_id)
+    return db.scalar(statements)
+
+
 def create_feedback(db: Session, payload: FeedbackCreate) -> Feedback:
     feedback = Feedback(
         id=f"fb-{uuid4().hex[:8]}",

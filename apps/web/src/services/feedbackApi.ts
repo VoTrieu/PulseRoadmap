@@ -13,6 +13,12 @@ async function getFeedback(): Promise<FeedbackInboxItem[]> {
   return mapFeedbackApiItemsToInboxItems(response.data);
 }
 
+async function getFeedbackById(id: string): Promise<FeedbackInboxItem> {
+  const response = await apiClient.get<FeedbackApiItem>(`/feedback/${id}`);
+
+  return mapFeedbackApiItemToInboxItem(response.data);
+}
+
 async function createFeedback(input: FeedbackCreateInput): Promise<FeedbackInboxItem> {
   const response = await apiClient.post<FeedbackApiItem>(
     "/feedback",
@@ -22,4 +28,4 @@ async function createFeedback(input: FeedbackCreateInput): Promise<FeedbackInbox
   return mapFeedbackApiItemToInboxItem(response.data);
 }
 
-export { createFeedback, getFeedback };
+export { createFeedback, getFeedback, getFeedbackById };
