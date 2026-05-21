@@ -2,6 +2,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
 import { AppCard } from "../ui/AppCard";
+import { Link } from "react-router-dom";
 import type { FeedbackInboxItem } from "../../types/feedback";
 
 type FeedbackInboxTableProps = {
@@ -37,7 +38,12 @@ function sentimentTemplate(item: FeedbackInboxItem) {
 function requestTemplate(item: FeedbackInboxItem) {
   return (
     <div>
-      <strong className="block text-sm text-slate-900">{item.request}</strong>
+      <Link
+        to={`/feedback/${item.id}`}
+        className="font-semibold text-slate-900 hover:text-teal-700"
+      >
+        {item.request}
+      </Link>
       <span className="mt-1 block text-xs text-slate-500">Linked to {item.linkedFeature}</span>
     </div>
   );
