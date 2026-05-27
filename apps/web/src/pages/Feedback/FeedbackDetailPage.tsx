@@ -3,8 +3,9 @@ import { useFeedbackDetail } from "../../queries/feedbackQueries";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailSummary";
 
- function FeedbackDetailPage() {
+function FeedbackDetailPage() {
   const { feedbackId = "" } = useParams();
   const {
     data: feedback,
@@ -34,32 +35,7 @@ import { PageHeader } from "../../components/ui/PageHeader";
         title={feedback.request}
         subtitle={feedback.customer}
       />
-      <section className="grid gap-4 rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-        <p>
-          <strong>Customer:</strong> {feedback.customer}
-        </p>
-        <p>
-          <strong>Product area:</strong> {feedback.productArea}
-        </p>
-        <p>
-          <strong>Tier:</strong> {feedback.tier}
-        </p>
-        <p>
-          <strong>Sentiment:</strong> {feedback.sentiment}
-        </p>
-        <p>
-          <strong>Urgency:</strong> {feedback.urgency}
-        </p>
-        <p>
-          <strong>Source:</strong> {feedback.source}
-        </p>
-        <p>
-          <strong>Linked feature:</strong> {feedback.linkedFeature}
-        </p>
-        <p>
-          <strong>Received:</strong> {feedback.receivedAt}
-        </p>
-      </section>
+      <FeedbackDetailSummary feedback={feedback} />
     </>
   );
 }

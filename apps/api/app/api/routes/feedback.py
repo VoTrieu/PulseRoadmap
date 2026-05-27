@@ -14,11 +14,11 @@ def list_feedback(db: Session = Depends(get_db)) -> list[FeedbackItem]:
     return feedback_repository.list_feedbacks(db)
 
 
-@router.post("", response_model=FeedbackItem, status_code=201)
+@router.post("", response_model=FeedbackItem, status_code=200)
 def create_feedback(payload: FeedbackCreate, db: Session = Depends(get_db)) -> FeedbackItem:
     return feedback_repository.create_feedback(db, payload)
 
-@router.get("/{feedback_id}", response_model=FeedbackItem, status_code=201)
+@router.get("/{feedback_id}", response_model=FeedbackItem, status_code=200)
 def get_feedback_by_id(feedback_id: str, db: Session = Depends(get_db)) -> FeedbackItem:
     feedback = feedback_repository.get_feedback_by_id(db, feedback_id)
     if not feedback:
