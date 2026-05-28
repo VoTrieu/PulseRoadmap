@@ -1,5 +1,5 @@
-import { useParams } from "react-router-dom";
-import { useFeedbackDetail } from "../../queries/feedbackQueries";
+import { useParams, useNavigate } from "react-router-dom";
+import { useFeedbackDetail, useDeleteFeedback } from "../../queries/feedbackQueries";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { PageHeader } from "../../components/ui/PageHeader";
@@ -7,6 +7,9 @@ import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailS
 
 function FeedbackDetailPage() {
   const { feedbackId = "" } = useParams();
+  const navigate = useNavigate();
+  const deleteFeedbackMutation = useDeleteFeedback();
+
   const {
     data: feedback,
     isLoading,
@@ -28,9 +31,24 @@ function FeedbackDetailPage() {
     );
   }
 
+  const handleDeleteFeedback = () => {
+    if (!feedbackId) return;
+
+    const shouldDelete = window.confirm("Delete this feedback item?");
+    if (!shouldDelete) return;
+
+    deleteFeedbackMutation.mutate(feedbackId, {
+      onSuccess: () => {
+        navigate("/feedback");
+      },
+    });
+  };
+
   return (
     <>
       <PageHeader
+        action={{ icon: "pi pi-trash", label: "Delete" }}
+        onAction={handleDeleteFeedback}
         eyebrow="Feedback"
         title={feedback.request}
         subtitle={feedback.customer}

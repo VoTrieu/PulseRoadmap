@@ -19,7 +19,9 @@ async function getFeedbackById(id: string): Promise<FeedbackInboxItem> {
   return mapFeedbackApiItemToInboxItem(response.data);
 }
 
-async function createFeedback(input: FeedbackCreateInput): Promise<FeedbackInboxItem> {
+async function createFeedback(
+  input: FeedbackCreateInput,
+): Promise<FeedbackInboxItem> {
   const response = await apiClient.post<FeedbackApiItem>(
     "/feedback",
     mapFeedbackCreateInputToApiPayload(input),
@@ -28,4 +30,8 @@ async function createFeedback(input: FeedbackCreateInput): Promise<FeedbackInbox
   return mapFeedbackApiItemToInboxItem(response.data);
 }
 
-export { createFeedback, getFeedback, getFeedbackById };
+async function deleteFeedback(id: string): Promise<void> {
+  await apiClient.delete(`/feedback/${id}`);
+}
+
+export { createFeedback, getFeedback, getFeedbackById, deleteFeedback };

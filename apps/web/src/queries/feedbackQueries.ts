@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFeedback, getFeedback, getFeedbackById } from "../services/feedbackApi";
+import {
+  createFeedback,
+  getFeedback,
+  getFeedbackById,
+  deleteFeedback,
+} from "../services/feedbackApi";
 import type { FeedbackCreateInput } from "../types/feedback";
 import { queryKeys } from "./queryKeys";
 
@@ -31,4 +36,26 @@ function useCreateFeedback() {
   });
 }
 
-export { useCreateFeedback, useFeedbackList, useFeedbackDetail };
+function useDeleteFeedback() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (feedbackId: string) => deleteFeedback(feedbackId),
+    onSuccess: async (_data, feedbackId) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.feedback.all,
+      });
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.feedback.detail(feedbackId),
+      });
+    },
+  });
+}
+
+export {
+  useCreateFeedback,
+  useFeedbackList,
+  useFeedbackDetail,
+  useDeleteFeedback,
+};

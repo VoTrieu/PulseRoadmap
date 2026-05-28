@@ -27,3 +27,11 @@ def create_feedback(db: Session, payload: FeedbackCreate) -> Feedback:
     db.commit()
     db.refresh(feedback)
     return feedback
+
+def delete_feedback(db: Session, feedback_id: str) -> bool:
+    feedback = db.get(Feedback, feedback_id)
+    if not feedback:
+        return False
+    db.delete(feedback)
+    db.commit()
+    return True

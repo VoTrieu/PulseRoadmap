@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
 from app.data.db.session import get_db
@@ -24,3 +24,10 @@ def get_feedback_by_id(feedback_id: str, db: Session = Depends(get_db)) -> Feedb
     if not feedback:
         raise HTTPException(status_code=404, detail="Feedback not found")
     return feedback
+
+@router.delete("/{feedback_id}", status_code=204)
+def delete_feedback(feedback_id: str, db: Session = Depends(get_db)) -> Response:
+    deleted = feedback_repository.delete_feedback(db, feedback_id)  
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Feedback not found")
+    return Response(status_code=204)
