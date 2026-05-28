@@ -1,14 +1,19 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useFeedbackDetail, useDeleteFeedback } from "../../queries/feedbackQueries";
+import {
+  useFeedbackDetail,
+  useDeleteFeedback,
+} from "../../queries/feedbackQueries";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailSummary";
+import { useAppConfirm } from "../../hooks/useAppConfirm";
 
 function FeedbackDetailPage() {
   const { feedbackId = "" } = useParams();
   const navigate = useNavigate();
   const deleteFeedbackMutation = useDeleteFeedback();
+  const { confirm } = useAppConfirm();
 
   const {
     data: feedback,
@@ -34,12 +39,14 @@ function FeedbackDetailPage() {
   const handleDeleteFeedback = () => {
     if (!feedbackId) return;
 
-    const shouldDelete = window.confirm("Delete this feedback item?");
-    if (!shouldDelete) return;
-
-    deleteFeedbackMutation.mutate(feedbackId, {
-      onSuccess: () => {
-        navigate("/feedback");
+    confirm({
+      acceptLabel: "Delete",
+      header: "Delete feedback",
+      message: "This feedback item will be permanently deleted.",
+      onAccept: () => {
+        deleteFeedbackMutation.mutate(feedbackId, {
+          onSuccess: () => navigate("/feedback"),
+        });
       },
     });
   };
