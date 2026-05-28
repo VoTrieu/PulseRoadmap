@@ -54,7 +54,12 @@ function FeedbackDetailPage() {
   return (
     <>
       <PageHeader
-        action={{ icon: "pi pi-trash", label: "Delete" }}
+        action={{ 
+          disabled: deleteFeedbackMutation.isPending, 
+          loading: deleteFeedbackMutation.isPending,
+          icon: "pi pi-trash", 
+          label: deleteFeedbackMutation.isPending ? "Deleting..." : "Delete" 
+        }}
         onAction={handleDeleteFeedback}
         eyebrow="Feedback"
         title={feedback.request}
