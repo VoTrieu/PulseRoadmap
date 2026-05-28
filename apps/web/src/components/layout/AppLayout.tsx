@@ -4,6 +4,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import { AppFooter } from "./AppFooter";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { AppNetworkProgress } from "./AppNetworkProgress";
 
 function AppLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -14,6 +15,7 @@ function AppLayout() {
 
   return (
     <>
+      <AppNetworkProgress />
       <ConfirmDialog />
       <div className="min-h-screen bg-slate-100 font-sans text-slate-900 lg:flex">
         <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
