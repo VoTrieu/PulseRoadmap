@@ -2,6 +2,14 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
+import {
+  CUSTOMER_TIERS,
+  DEFAULT_FEEDBACK_FORM_VALUE,
+  FEEDBACK_PRODUCT_AREAS,
+  FEEDBACK_SENTIMENTS,
+  FEEDBACK_SOURCES,
+  FEEDBACK_URGENCIES,
+} from "../../constants/feedbackConstants";
 import type {
   CustomerTier,
   FeedbackCreateInput,
@@ -21,30 +29,12 @@ type FeedbackFormDialogProps = {
   visible: boolean;
 };
 
-const productAreas = ["Admin", "Roadmap", "AI", "Analytics", "Releases"];
-const sentiments: FeedbackSentiment[] = ["Positive", "Neutral", "Negative"];
-const tiers: CustomerTier[] = ["Enterprise", "Growth", "Startup"];
-const urgencies: FeedbackUrgency[] = ["High", "Medium", "Low"];
-const sources = ["Customer call", "Portal", "Slack", "Email"];
-
-const defaultFormValue: FeedbackCreateInput = {
-  customer: "",
-  request: "",
-  productArea: "Roadmap",
-  sentiment: "Neutral",
-  tier: "Growth",
-  urgency: "Medium",
-  source: "Portal",
-  linkedFeature: "",
-  receivedAt: "May 18",
-};
-
 function readFormValue(formData: FormData, key: keyof FeedbackCreateInput) {
   return String(formData.get(key) ?? "").trim();
 }
 
 function FeedbackFormDialog({
-  initialValue = defaultFormValue,
+  initialValue = DEFAULT_FEEDBACK_FORM_VALUE,
   isSubmitting,
   mode,
   onHide,
@@ -134,7 +124,7 @@ function FeedbackFormDialog({
               Product area
             </span>
             <AppDropdown
-              options={productAreas}
+              options={FEEDBACK_PRODUCT_AREAS}
               value={form.productArea}
               onChange={(event) => updateForm("productArea", event.value)}
             />
@@ -146,7 +136,7 @@ function FeedbackFormDialog({
               Customer tier
             </span>
             <AppDropdown
-              options={tiers}
+              options={CUSTOMER_TIERS}
               value={form.tier}
               onChange={(event) => updateForm("tier", event.value)}
             />
@@ -158,7 +148,7 @@ function FeedbackFormDialog({
               Sentiment
             </span>
             <AppDropdown
-              options={sentiments}
+              options={FEEDBACK_SENTIMENTS}
               value={form.sentiment}
               onChange={(event) => updateForm("sentiment", event.value)}
             />
@@ -170,7 +160,7 @@ function FeedbackFormDialog({
               Urgency
             </span>
             <AppDropdown
-              options={urgencies}
+              options={FEEDBACK_URGENCIES}
               value={form.urgency}
               onChange={(event) => updateForm("urgency", event.value)}
             />
@@ -180,7 +170,7 @@ function FeedbackFormDialog({
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">Source</span>
             <AppDropdown
-              options={sources}
+              options={FEEDBACK_SOURCES}
               value={form.source}
               onChange={(event) => updateForm("source", event.value)}
             />

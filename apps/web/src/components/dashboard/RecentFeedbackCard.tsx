@@ -1,6 +1,7 @@
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
+import { FEEDBACK_URGENCY_SEVERITY } from "../../constants/feedbackConstants";
 import type { FeedbackItem } from "../../types/dashboard";
 import { AppCard } from "../ui/AppCard";
 
@@ -24,7 +25,7 @@ function urgencyTemplate(item: FeedbackItem) {
     <Tag
       className="inline-flex min-h-6 items-center justify-center whitespace-nowrap px-2 py-1 text-xs font-extrabold"
       value={item.urgency}
-      severity={item.urgency === "High" ? "danger" : "warning"}
+      severity={FEEDBACK_URGENCY_SEVERITY[item.urgency]}
       rounded
     />
   );

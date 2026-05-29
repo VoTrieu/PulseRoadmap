@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailSummary";
+import { FEEDBACK_ACTION_SEVERITY } from "../../constants/feedbackConstants";
 import { FeedbackFormDialog } from "../../components/feedback/FeedbackFormDialog";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
@@ -79,7 +80,7 @@ function FeedbackDetailPage() {
             label: "Edit",
             onClick: () => setIsEditDialogVisible(true),
             outlined: true,
-            severity: "success",
+            severity: FEEDBACK_ACTION_SEVERITY.edit,
           },
           {
             disabled: deleteFeedbackMutation.isPending,
@@ -87,7 +88,7 @@ function FeedbackDetailPage() {
             label: deleteFeedbackMutation.isPending ? "Deleting..." : "Delete",
             loading: deleteFeedbackMutation.isPending,
             onClick: handleDeleteFeedback,
-            severity: "danger",
+            severity: FEEDBACK_ACTION_SEVERITY.delete,
           },
         ]}
         eyebrow="Feedback"
