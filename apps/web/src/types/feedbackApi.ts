@@ -1,4 +1,8 @@
-import type { CustomerTier, FeedbackSentiment, FeedbackUrgency } from "./feedback";
+import type {
+  CustomerTier,
+  FeedbackSentiment,
+  FeedbackUrgency,
+} from "./feedback";
 
 type FeedbackApiItem = {
   id: string;
@@ -13,16 +17,12 @@ type FeedbackApiItem = {
   received_at: string;
 };
 
-type FeedbackCreateApiPayload = {
-  customer: string;
-  request: string;
-  product_area: string;
-  sentiment: FeedbackSentiment;
-  tier: CustomerTier;
-  urgency: FeedbackUrgency;
-  source: string;
-  linked_feature: string;
-  received_at: string;
-};
+type FeedbackCreateApiPayload = Omit<FeedbackApiItem, "id">;
 
-export type { FeedbackApiItem, FeedbackCreateApiPayload };
+type FeedbackUpdateApiPayload = Partial<FeedbackCreateApiPayload>;
+
+export type {
+  FeedbackApiItem,
+  FeedbackCreateApiPayload,
+  FeedbackUpdateApiPayload,
+};

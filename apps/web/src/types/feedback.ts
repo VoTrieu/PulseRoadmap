@@ -15,17 +15,9 @@ type FeedbackInboxItem = {
   receivedAt: string;
 };
 
-type FeedbackCreateInput = {
-  customer: string;
-  request: string;
-  productArea: string;
-  sentiment: FeedbackSentiment;
-  tier: CustomerTier;
-  urgency: FeedbackUrgency;
-  source: string;
-  linkedFeature: string;
-  receivedAt: string;
-};
+type FeedbackCreateInput = Omit<FeedbackInboxItem, "id">;
+
+type FeedbackUpdateInput = Partial<FeedbackCreateInput>;
 
 type FeedbackSummary = {
   label: string;
@@ -40,5 +32,6 @@ export type {
   FeedbackInboxItem,
   FeedbackSentiment,
   FeedbackSummary,
-  FeedbackUrgency
+  FeedbackUrgency,
+  FeedbackUpdateInput,
 };

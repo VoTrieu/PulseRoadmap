@@ -4,9 +4,18 @@ import {
   getFeedback,
   getFeedbackById,
   deleteFeedback,
+  updateFeedback,
 } from "../services/feedbackApi";
-import type { FeedbackCreateInput } from "../types/feedback";
+import type {
+  FeedbackCreateInput,
+  FeedbackUpdateInput,
+} from "../types/feedback";
 import { queryKeys } from "./queryKeys";
+
+type UpdateFeedbackVariables = {
+  feedbackId: string;
+  input: FeedbackUpdateInput;
+};
 
 function useFeedbackList() {
   return useQuery({
@@ -36,6 +45,24 @@ function useCreateFeedback() {
   });
 }
 
+function useUpdateFeedback() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ feedbackId, input }: UpdateFeedbackVariables) =>
+      updateFeedback(feedbackId, input),
+    onSuccess: async (_data, { feedbackId }) => {
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.feedback.list(),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: queryKeys.feedback.detail(feedbackId),
+      });
+    },
+  });
+}
+
 function useDeleteFeedback() {
   const queryClient = useQueryClient();
 
@@ -57,5 +84,6 @@ export {
   useCreateFeedback,
   useFeedbackList,
   useFeedbackDetail,
+  useUpdateFeedback,
   useDeleteFeedback,
 };

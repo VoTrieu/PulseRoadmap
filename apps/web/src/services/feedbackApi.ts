@@ -2,8 +2,13 @@ import {
   mapFeedbackApiItemToInboxItem,
   mapFeedbackApiItemsToInboxItems,
   mapFeedbackCreateInputToApiPayload,
+  mapFeedbackUpdateInputToApiPayload,
 } from "../mappers/feedbackMapper";
-import type { FeedbackCreateInput, FeedbackInboxItem } from "../types/feedback";
+import type {
+  FeedbackCreateInput,
+  FeedbackInboxItem,
+  FeedbackUpdateInput,
+} from "../types/feedback";
 import type { FeedbackApiItem } from "../types/feedbackApi";
 import { apiClient } from "./apiClient";
 
@@ -30,8 +35,26 @@ async function createFeedback(
   return mapFeedbackApiItemToInboxItem(response.data);
 }
 
+async function updateFeedback(
+  feedbackId: string,
+  input: FeedbackUpdateInput,
+): Promise<FeedbackInboxItem> {
+  const response = await apiClient.patch<FeedbackApiItem>(
+    `/feedback/${feedbackId}`,
+    mapFeedbackUpdateInputToApiPayload(input),
+  );
+
+  return mapFeedbackApiItemToInboxItem(response.data);
+}
+
 async function deleteFeedback(id: string): Promise<void> {
   await apiClient.delete(`/feedback/${id}`);
 }
 
-export { createFeedback, getFeedback, getFeedbackById, deleteFeedback };
+export {
+  getFeedback,
+  getFeedbackById,
+  createFeedback,
+  updateFeedback,
+  deleteFeedback,
+};

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AddFeedbackDialog } from "../../components/feedback/AddFeedbackDialog";
+import { FeedbackFormDialog } from "../../components/feedback/FeedbackFormDialog";
 import { FeedbackFilters } from "../../components/feedback/FeedbackFilters";
 import { FeedbackInboxTable } from "../../components/feedback/FeedbackInboxTable";
 import { FeedbackSummaryGrid } from "../../components/feedback/FeedbackSummaryGrid";
@@ -53,8 +53,9 @@ function FeedbackPage() {
         )}
       </section>
 
-      <AddFeedbackDialog
+      <FeedbackFormDialog
         isSubmitting={createFeedbackMutation.isPending}
+        mode="create"
         onHide={() => setIsAddDialogVisible(false)}
         onSubmit={handleCreateFeedback}
         visible={isAddDialogVisible}

@@ -2,16 +2,20 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
-import { AppDropdown } from "../ui/AppDropdown";
 import type {
   CustomerTier,
   FeedbackCreateInput,
   FeedbackSentiment,
   FeedbackUrgency,
 } from "../../types/feedback";
+import { AppDropdown } from "../ui/AppDropdown";
 
-type AddFeedbackDialogProps = {
+type FeedbackFormMode = "create" | "edit";
+
+type FeedbackFormDialogProps = {
+  initialValue?: FeedbackCreateInput;
   isSubmitting: boolean;
+  mode: FeedbackFormMode;
   onHide: () => void;
   onSubmit: (input: FeedbackCreateInput) => void;
   visible: boolean;
@@ -23,7 +27,7 @@ const tiers: CustomerTier[] = ["Enterprise", "Growth", "Startup"];
 const urgencies: FeedbackUrgency[] = ["High", "Medium", "Low"];
 const sources = ["Customer call", "Portal", "Slack", "Email"];
 
-const initialForm: FeedbackCreateInput = {
+const defaultFormValue: FeedbackCreateInput = {
   customer: "",
   request: "",
   productArea: "Roadmap",
@@ -35,26 +39,38 @@ const initialForm: FeedbackCreateInput = {
   receivedAt: "May 18",
 };
 
-function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedbackDialogProps) {
-  const [form, setForm] = useState<FeedbackCreateInput>(initialForm);
+function readFormValue(formData: FormData, key: keyof FeedbackCreateInput) {
+  return String(formData.get(key) ?? "").trim();
+}
 
-  const isValid = Boolean(form.customer.trim() && form.request.trim() && form.linkedFeature.trim());
+function FeedbackFormDialog({
+  initialValue = defaultFormValue,
+  isSubmitting,
+  mode,
+  onHide,
+  onSubmit,
+  visible,
+}: FeedbackFormDialogProps) {
+  const [form, setForm] = useState<FeedbackCreateInput>(initialValue);
+  const isValid = Boolean(
+    form.customer.trim() && form.request.trim() && form.linkedFeature.trim(),
+  );
+  const isCreate = mode === "create";
+  const header = isCreate ? "Add feedback" : "Edit feedback";
+  const submitLabel = isCreate ? "Add feedback" : "Save changes";
+  const submittingLabel = isCreate ? "Adding..." : "Saving...";
+  const submitIcon = isCreate ? "pi pi-plus" : "pi pi-save";
 
   useEffect(() => {
-    if (!visible) {
-      setForm(initialForm);
+    if (visible) {
+      setForm(initialValue);
     }
-  }, [visible]);
+  }, [initialValue, visible]);
 
-  function updateForm<Value extends FeedbackCreateInput[keyof FeedbackCreateInput]>(
-    key: keyof FeedbackCreateInput,
-    value: Value,
-  ) {
+  function updateForm<
+    Value extends FeedbackCreateInput[keyof FeedbackCreateInput],
+  >(key: keyof FeedbackCreateInput, value: Value) {
     setForm((current) => ({ ...current, [key]: value }));
-  }
-
-  function readFormValue(formData: FormData, key: keyof FeedbackCreateInput) {
-    return String(formData.get(key) ?? "").trim();
   }
 
   function submitAction(formData: FormData) {
@@ -86,7 +102,7 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
   return (
     <Dialog
       className="w-[min(42rem,calc(100vw-2rem))]"
-      header="Add feedback"
+      header={header}
       modal
       onHide={handleHide}
       visible={visible}
@@ -114,7 +130,9 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
 
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Product area</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Product area
+            </span>
             <AppDropdown
               options={productAreas}
               value={form.productArea}
@@ -124,7 +142,9 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Customer tier</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Customer tier
+            </span>
             <AppDropdown
               options={tiers}
               value={form.tier}
@@ -134,7 +154,9 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Sentiment</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Sentiment
+            </span>
             <AppDropdown
               options={sentiments}
               value={form.sentiment}
@@ -144,7 +166,9 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Urgency</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Urgency
+            </span>
             <AppDropdown
               options={urgencies}
               value={form.urgency}
@@ -164,7 +188,9 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Received</span>
+            <span className="text-sm font-semibold text-slate-700">
+              Received
+            </span>
             <InputText
               name="receivedAt"
               value={form.receivedAt}
@@ -175,11 +201,15 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
         </div>
 
         <label className="grid gap-2">
-          <span className="text-sm font-semibold text-slate-700">Linked feature</span>
+          <span className="text-sm font-semibold text-slate-700">
+            Linked feature
+          </span>
           <InputText
             name="linkedFeature"
             value={form.linkedFeature}
-            onChange={(event) => updateForm("linkedFeature", event.target.value)}
+            onChange={(event) =>
+              updateForm("linkedFeature", event.target.value)
+            }
             placeholder="Roadmap item or feature idea"
           />
         </label>
@@ -188,8 +218,8 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
           <Button label="Cancel" onClick={handleHide} outlined type="button" />
           <Button
             disabled={!isValid || isSubmitting}
-            icon={isSubmitting ? "pi pi-spin pi-spinner" : "pi pi-plus"}
-            label="Add feedback"
+            icon={isSubmitting ? "pi pi-spin pi-spinner" : submitIcon}
+            label={isSubmitting ? submittingLabel : submitLabel}
             type="submit"
           />
         </div>
@@ -198,4 +228,4 @@ function AddFeedbackDialog({ isSubmitting, onHide, onSubmit, visible }: AddFeedb
   );
 }
 
-export { AddFeedbackDialog };
+export { FeedbackFormDialog };
