@@ -1,26 +1,42 @@
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  useFeedbackDetail,
-  useDeleteFeedback,
-} from "../../queries/feedbackQueries";
-import { LoadingState } from "../../components/ui/LoadingState";
-import { ErrorState } from "../../components/ui/ErrorState";
-import { PageHeader } from "../../components/ui/PageHeader";
+import { useNavigate, useParams } from "react-router-dom";
 import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailSummary";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { LoadingState } from "../../components/ui/LoadingState";
+import { PageHeader } from "../../components/ui/PageHeader";
 import { useAppConfirm } from "../../hooks/useAppConfirm";
+import {
+  useDeleteFeedback,
+  useFeedbackDetail,
+} from "../../queries/feedbackQueries";
 
 function FeedbackDetailPage() {
   const { feedbackId = "" } = useParams();
   const navigate = useNavigate();
   const deleteFeedbackMutation = useDeleteFeedback();
   const { confirm } = useAppConfirm();
-
   const {
     data: feedback,
-    isLoading,
     isError,
+    isLoading,
     refetch,
   } = useFeedbackDetail(feedbackId);
+
+  function handleDeleteFeedback() {
+    if (!feedbackId) {
+      return;
+    }
+
+    confirm({
+      acceptLabel: "Delete",
+      header: "Delete feedback",
+      message: "This feedback item will be permanently deleted.",
+      onAccept: () => {
+        deleteFeedbackMutation.mutate(feedbackId, {
+          onSuccess: () => navigate("/feedback"),
+        });
+      },
+    });
+  }
 
   if (isLoading) {
     return <LoadingState message="Loading feedback..." />;
@@ -36,29 +52,14 @@ function FeedbackDetailPage() {
     );
   }
 
-  const handleDeleteFeedback = () => {
-    if (!feedbackId) return;
-
-    confirm({
-      acceptLabel: "Delete",
-      header: "Delete feedback",
-      message: "This feedback item will be permanently deleted.",
-      onAccept: () => {
-        deleteFeedbackMutation.mutate(feedbackId, {
-          onSuccess: () => navigate("/feedback"),
-        });
-      },
-    });
-  };
-
   return (
     <>
       <PageHeader
-        action={{ 
-          disabled: deleteFeedbackMutation.isPending, 
+        action={{
+          disabled: deleteFeedbackMutation.isPending,
+          icon: "pi pi-trash",
+          label: deleteFeedbackMutation.isPending ? "Deleting..." : "Delete",
           loading: deleteFeedbackMutation.isPending,
-          icon: "pi pi-trash", 
-          label: deleteFeedbackMutation.isPending ? "Deleting..." : "Delete" 
         }}
         onAction={handleDeleteFeedback}
         eyebrow="Feedback"
