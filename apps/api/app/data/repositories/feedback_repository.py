@@ -4,7 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.data.models.feedback import Feedback
-from app.schemas.feedback import FeedbackCreate
+from app.schemas.feedback import FeedbackCreate, FeedbackUpdate
 
 
 def list_feedbacks(db: Session) -> list[Feedback]:
@@ -43,3 +43,22 @@ def delete_feedback(db: Session, feedback_id: str) -> bool:
     db.commit()
 
     return True
+
+
+def update_feedback(
+    db: Session, feedback_id: str, payload: FeedbackUpdate
+) -> Feedback | None:
+    feedback = db.get(Feedback, feedback_id)
+
+    if feedback is None:
+        return None
+
+    updates = payload.model_dump(exclude_unset=True)
+
+    for key, value in updates.items():
+        setattr(feedback, key, value)
+
+    db.commit()
+    db.refresh(feedback)
+
+    return feedback
