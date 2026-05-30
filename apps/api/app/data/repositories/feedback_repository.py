@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.data.models.feedback import Feedback
@@ -12,13 +12,17 @@ def list_feedbacks(
     search: str | None = None,
     product_area: str | None = None,
     urgency: str | None = None,
-) -> list[Feedback]:
-    statement = select(Feedback)
+    skip: int = 0,
+    take: int = 10,
+) -> tuple[list[Feedback], int]:
+
+    # 1. Base statement where we apply all shared filters
+    base_stmt = select(Feedback)
     search_value = search.strip() if search else None
 
     if search_value:
         pattern = f"%{search_value}%"
-        statement = statement.where(
+        base_stmt = base_stmt.where(
             or_(
                 Feedback.customer.ilike(pattern),
                 Feedback.request.ilike(pattern),
@@ -28,17 +32,26 @@ def list_feedbacks(
         )
 
     if product_area:
-        statement = statement.where(Feedback.product_area == product_area)
+        base_stmt = base_stmt.where(Feedback.product_area == product_area)
 
     if urgency:
-        statement = statement.where(Feedback.urgency == urgency)
+        base_stmt = base_stmt.where(Feedback.urgency == urgency)
 
-    statement = statement.order_by(
-        Feedback.created_at.desc(),
-        Feedback.id.desc(),
+    # 2. Get total count by converting the filtered base statement into a count query
+    count_stmt = select(func.count()).select_from(base_stmt.subquery())
+    total_count = db.scalar(count_stmt) or 0
+
+    # 3. Apply ordering and pagination to the base statement for final results
+    data_stmt = (
+        base_stmt.order_by(
+            Feedback.created_at.desc(),
+            Feedback.id.desc(),
+        )
+        .offset(skip)
+        .limit(take)
     )
 
-    return list(db.scalars(statement))
+    return list(db.scalars(data_stmt)), total_count
 
 
 def get_feedback_by_id(db: Session, feedback_id: str) -> Feedback | None:

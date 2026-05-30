@@ -44,3 +44,12 @@ class FeedbackItem(BaseModel):
     received_at: str
     # Allow converting SQLAlchemy model objects into API response objects.
     model_config = {"from_attributes": True}
+
+
+class FeedbackListResponse(BaseModel):
+    """Concrete paginated response for feedback items."""
+    items: list[FeedbackItem]
+    total: int
+    page: int
+    page_size: int
+    total_pages: int

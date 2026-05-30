@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
+from app.core.pagination import paginate
 from app.data.db.session import get_db
 from app.data.repositories import feedback_repository
 from app.schemas.feedback import (
     FeedbackCreate,
     FeedbackItem,
+    FeedbackListResponse,
     FeedbackUpdate,
     FeedbackUrgency,
 )
@@ -13,19 +15,25 @@ from app.schemas.feedback import (
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 
 
-@router.get("", response_model=list[FeedbackItem])
+@router.get("", response_model=FeedbackListResponse)
 def list_feedback(
     search: str | None = None,
     product_area: str | None = None,
     urgency: FeedbackUrgency | None = None,
+    skip: int = 0,
+    take: int = 10,
     db: Session = Depends(get_db),
-) -> list[FeedbackItem]:
-    return feedback_repository.list_feedbacks(
+) -> FeedbackListResponse:
+    items, total = feedback_repository.list_feedbacks(
         db,
         search=search,
         product_area=product_area,
         urgency=urgency,
+        skip=skip,
+        take=take,
     )
+    
+    return FeedbackListResponse(**paginate(items, total, skip, take))
 
 
 @router.post("", response_model=FeedbackItem, status_code=201)
