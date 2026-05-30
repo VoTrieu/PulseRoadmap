@@ -10,6 +10,7 @@ import type {
   FeedbackCreateInput,
   FeedbackListFilters,
   FeedbackUpdateInput,
+  PaginationParams,
 } from "../types/feedback";
 import { queryKeys } from "./queryKeys";
 
@@ -18,10 +19,10 @@ type UpdateFeedbackVariables = {
   input: FeedbackUpdateInput;
 };
 
-function useFeedbackList(filters: FeedbackListFilters) {
+function useFeedbackList(filters: FeedbackListFilters, pagination?: PaginationParams) {
   return useQuery({
-    queryKey: queryKeys.feedback.list(filters),
-    queryFn: () => getFeedback(filters),
+    queryKey: queryKeys.feedback.list(filters, pagination),
+    queryFn: () => getFeedback(filters, pagination),
   });
 }
 

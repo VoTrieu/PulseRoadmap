@@ -1,5 +1,5 @@
+import { useState } from "react";
 import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
 import { Link } from "react-router-dom";
 import {
@@ -7,11 +7,15 @@ import {
   FEEDBACK_URGENCY_SEVERITY,
 } from "../../constants/feedbackConstants";
 import { useTranslation } from "react-i18next";
-import type { FeedbackInboxItem } from "../../types/feedback";
+import type { FeedbackInboxItem, PaginationParams } from "../../types/feedback";
 import { AppCard } from "../ui/AppCard";
+import { PaginatorTable } from "../ui/PaginatorTable";
 
 type FeedbackInboxTableProps = {
   feedback: FeedbackInboxItem[];
+  totalRecords: number;
+  isLoading: boolean;
+  onPageChange: (params: PaginationParams) => void;
 };
 
 function urgencyTemplate(item: FeedbackInboxItem) {
@@ -40,8 +44,14 @@ function sentimentTemplate(item: FeedbackInboxItem) {
   );
 }
 
-function FeedbackInboxTable({ feedback }: FeedbackInboxTableProps) {
+function FeedbackInboxTable({
+  feedback,
+  totalRecords,
+  isLoading,
+  onPageChange,
+}: FeedbackInboxTableProps) {
   const { t } = useTranslation();
+  const [first, setFirst] = useState(0);
 
   function requestTemplate(item: FeedbackInboxItem) {
     return (
@@ -59,13 +69,24 @@ function FeedbackInboxTable({ feedback }: FeedbackInboxTableProps) {
     );
   }
 
+  function handlePageChange(params: PaginationParams) {
+    setFirst(params.skip);
+    onPageChange(params);
+  }
+
   return (
     <AppCard
       compact
       title={t("feedback.inbox.title")}
       subTitle={t("feedback.inbox.subtitle")}
     >
-      <DataTable value={feedback} size="small" stripedRows>
+      <PaginatorTable
+        data={feedback}
+        totalRecords={totalRecords}
+        isLoading={isLoading}
+        onPageChange={handlePageChange}
+        first={first}
+      >
         <Column
           header={t("feedback.table.request")}
           body={requestTemplate}
@@ -90,7 +111,7 @@ function FeedbackInboxTable({ feedback }: FeedbackInboxTableProps) {
         />
         <Column field="source" header={t("feedback.source")} style={{ width: "9rem" }} />
         <Column field="receivedAt" header={t("feedback.table.received")} style={{ width: "8rem" }} />
-      </DataTable>
+      </PaginatorTable>
     </AppCard>
   );
 }

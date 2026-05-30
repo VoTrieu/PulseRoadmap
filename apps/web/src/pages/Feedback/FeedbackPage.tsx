@@ -10,10 +10,11 @@ import { feedbackSummaries } from "../../data/feedbackSampleData";
 import { useTranslation } from "react-i18next";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useCreateFeedback, useFeedbackList } from "../../queries/feedbackQueries";
-import type { FeedbackCreateInput, FeedbackListFilters } from "../../types/feedback";
+import type { FeedbackCreateInput, FeedbackListFilters, PaginationParams } from "../../types/feedback";
 
 function FeedbackPage() {
   const [filters, setFilters] = useState<FeedbackListFilters>({ search: "" });
+  const [pagination, setPagination] = useState<PaginationParams>({ skip: 0, take: 10 });
   const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
   const debouncedSearch = useDebouncedValue(filters.search);
   const queryFilters = useMemo(
@@ -21,11 +22,11 @@ function FeedbackPage() {
     [debouncedSearch, filters],
   );
   const {
-    data: feedback = [],
+    data: feedbackResponse,
     isError,
     isLoading,
     refetch,
-  } = useFeedbackList(queryFilters);
+  } = useFeedbackList(queryFilters, pagination);
   const createFeedbackMutation = useCreateFeedback();
   const { t } = useTranslation();
 
@@ -34,6 +35,13 @@ function FeedbackPage() {
       onSuccess: () => setIsAddDialogVisible(false),
     });
   }
+
+  function handlePageChange(newPagination: PaginationParams) {
+    setPagination(newPagination);
+  }
+
+  const feedback = feedbackResponse?.items ?? [];
+  const totalRecords = feedbackResponse?.total ?? 0;
 
   return (
     <>
@@ -58,7 +66,12 @@ function FeedbackPage() {
             onRetry={() => void refetch()}
           />
         ) : (
-          <FeedbackInboxTable feedback={feedback} />
+          <FeedbackInboxTable
+            feedback={feedback}
+            totalRecords={totalRecords}
+            isLoading={isLoading}
+            onPageChange={handlePageChange}
+          />
         )}
       </section>
 

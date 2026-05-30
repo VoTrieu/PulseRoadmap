@@ -21,8 +21,17 @@ type FeedbackCreateApiPayload = Omit<FeedbackApiItem, "id">;
 
 type FeedbackUpdateApiPayload = Partial<FeedbackCreateApiPayload>;
 
+type FeedbackListApiResponse = {
+  items: FeedbackApiItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+};
+
 export type {
   FeedbackApiItem,
   FeedbackCreateApiPayload,
+  FeedbackListApiResponse,
   FeedbackUpdateApiPayload,
 };

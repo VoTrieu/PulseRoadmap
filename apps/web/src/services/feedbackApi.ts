@@ -2,33 +2,42 @@ import {
   mapFeedbackApiItemToInboxItem,
   mapFeedbackApiItemsToInboxItems,
   mapFeedbackCreateInputToApiPayload,
+  mapFeedbackListApiResponseToListResponse,
   mapFeedbackUpdateInputToApiPayload,
 } from "../mappers/feedbackMapper";
 import type {
   FeedbackCreateInput,
   FeedbackInboxItem,
   FeedbackListFilters,
+  FeedbackListResponse,
   FeedbackUpdateInput,
+  PaginationParams,
 } from "../types/feedback";
-import type { FeedbackApiItem } from "../types/feedbackApi";
+import type { FeedbackApiItem, FeedbackListApiResponse } from "../types/feedbackApi";
 import { apiClient } from "./apiClient";
 
-function toFeedbackQueryParams(filters?: FeedbackListFilters) {
+function toFeedbackQueryParams(
+  filters?: FeedbackListFilters,
+  pagination?: PaginationParams,
+) {
   return {
     product_area: filters?.productArea || undefined,
     search: filters?.search.trim() || undefined,
     urgency: filters?.urgency || undefined,
+    skip: pagination?.skip ?? 0,
+    take: pagination?.take ?? 10,
   };
 }
 
 async function getFeedback(
   filters?: FeedbackListFilters,
-): Promise<FeedbackInboxItem[]> {
-  const response = await apiClient.get<FeedbackApiItem[]>("/feedback", {
-    params: toFeedbackQueryParams(filters),
+  pagination?: PaginationParams,
+): Promise<FeedbackListResponse> {
+  const response = await apiClient.get<FeedbackListApiResponse>("/feedback", {
+    params: toFeedbackQueryParams(filters, pagination),
   });
 
-  return mapFeedbackApiItemsToInboxItems(response.data);
+  return mapFeedbackListApiResponseToListResponse(response.data);
 }
 
 async function getFeedbackById(id: string): Promise<FeedbackInboxItem> {

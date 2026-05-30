@@ -1,11 +1,13 @@
 import type {
   FeedbackCreateInput,
   FeedbackInboxItem,
+  FeedbackListResponse,
   FeedbackUpdateInput,
 } from "../types/feedback";
 import type {
   FeedbackApiItem,
   FeedbackCreateApiPayload,
+  FeedbackListApiResponse,
   FeedbackUpdateApiPayload,
 } from "../types/feedbackApi";
 
@@ -30,6 +32,18 @@ function mapFeedbackApiItemsToInboxItems(
   items: FeedbackApiItem[],
 ): FeedbackInboxItem[] {
   return items.map(mapFeedbackApiItemToInboxItem);
+}
+
+function mapFeedbackListApiResponseToListResponse(
+  response: FeedbackListApiResponse,
+): FeedbackListResponse {
+  return {
+    items: mapFeedbackApiItemsToInboxItems(response.items),
+    total: response.total,
+    page: response.page,
+    pageSize: response.page_size,
+    totalPages: response.total_pages,
+  };
 }
 
 function mapFeedbackCreateInputToApiPayload(
@@ -71,5 +85,6 @@ export {
   mapFeedbackApiItemToInboxItem,
   mapFeedbackApiItemsToInboxItems,
   mapFeedbackCreateInputToApiPayload,
+  mapFeedbackListApiResponseToListResponse,
   mapFeedbackUpdateInputToApiPayload,
 };
