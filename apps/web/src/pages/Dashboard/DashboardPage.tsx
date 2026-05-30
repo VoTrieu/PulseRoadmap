@@ -6,14 +6,17 @@ import { RecentFeedbackCard } from "../../components/dashboard/RecentFeedbackCar
 import { RoadmapProgressCard } from "../../components/dashboard/RoadmapProgressCard";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { bugMix, feedback, feedbackTrend, insights, metrics, roadmap } from "../../data/dashboardSampleData";
+import { useTranslation } from "react-i18next";
 
 function DashboardPage() {
+  const { t } = useTranslation();
+
   return (
     <>
       <PageHeader
-        action={{ icon: "pi pi-sparkles", label: "Generate brief" }}
-        eyebrow="Dashboard"
-        title="Product operations command center"
+        action={{ icon: "pi pi-sparkles", label: t("dashboard.generateBrief") }}
+        eyebrow={t("dashboard.eyebrow")}
+        title={t("dashboard.title")}
       />
 
       <MetricsGrid metrics={metrics} />

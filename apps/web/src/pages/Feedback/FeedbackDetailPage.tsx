@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FeedbackDetailSummary } from "../../components/feedback/FeedbackDetailSummary";
-import { FEEDBACK_ACTION_SEVERITY } from "../../constants/feedbackConstants";
 import { FeedbackFormDialog } from "../../components/feedback/FeedbackFormDialog";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { FEEDBACK_ACTION_SEVERITY } from "../../constants/feedbackConstants";
 import { useAppConfirm } from "../../hooks/useAppConfirm";
+import { useTranslation } from "react-i18next";
 import {
   useDeleteFeedback,
   useFeedbackDetail,
@@ -21,6 +22,7 @@ function FeedbackDetailPage() {
   const deleteFeedbackMutation = useDeleteFeedback();
   const updateFeedbackMutation = useUpdateFeedback();
   const { confirm } = useAppConfirm();
+  const { t } = useTranslation();
   const {
     data: feedback,
     isError,
@@ -34,9 +36,9 @@ function FeedbackDetailPage() {
     }
 
     confirm({
-      acceptLabel: "Delete",
-      header: "Delete feedback",
-      message: "This feedback item will be permanently deleted.",
+      acceptLabel: t("common.delete"),
+      header: t("feedback.delete.header"),
+      message: t("feedback.delete.message"),
       onAccept: () => {
         deleteFeedbackMutation.mutate(feedbackId, {
           onSuccess: () => navigate("/feedback"),
@@ -57,14 +59,14 @@ function FeedbackDetailPage() {
   }
 
   if (isLoading) {
-    return <LoadingState message="Loading feedback..." />;
+    return <LoadingState message={t("feedback.loading")} />;
   }
 
   if (isError || !feedback) {
     return (
       <ErrorState
-        title="Could not load feedback"
-        message="This feedback item may not exist or there was an error loading it. Please try again."
+        title={t("feedback.detailLoadErrorTitle")}
+        message={t("feedback.detailLoadErrorMessage")}
         onRetry={() => void refetch()}
       />
     );
@@ -77,7 +79,7 @@ function FeedbackDetailPage() {
           {
             disabled: updateFeedbackMutation.isPending,
             icon: "pi pi-pencil",
-            label: "Edit",
+            label: t("common.edit"),
             onClick: () => setIsEditDialogVisible(true),
             outlined: true,
             severity: FEEDBACK_ACTION_SEVERITY.edit,
@@ -85,13 +87,15 @@ function FeedbackDetailPage() {
           {
             disabled: deleteFeedbackMutation.isPending,
             icon: "pi pi-trash",
-            label: deleteFeedbackMutation.isPending ? "Deleting..." : "Delete",
+            label: deleteFeedbackMutation.isPending
+              ? t("common.deleting")
+              : t("common.delete"),
             loading: deleteFeedbackMutation.isPending,
             onClick: handleDeleteFeedback,
             severity: FEEDBACK_ACTION_SEVERITY.delete,
           },
         ]}
-        eyebrow="Feedback"
+        eyebrow={t("feedback.eyebrow")}
         title={feedback.request}
         subtitle={feedback.customer}
       />

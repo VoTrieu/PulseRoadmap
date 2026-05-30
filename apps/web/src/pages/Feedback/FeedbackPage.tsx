@@ -7,6 +7,7 @@ import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { feedbackSummaries } from "../../data/feedbackSampleData";
+import { useTranslation } from "react-i18next";
 import { useCreateFeedback, useFeedbackList } from "../../queries/feedbackQueries";
 import type { FeedbackCreateInput } from "../../types/feedback";
 
@@ -19,6 +20,7 @@ function FeedbackPage() {
     refetch,
   } = useFeedbackList();
   const createFeedbackMutation = useCreateFeedback();
+  const { t } = useTranslation();
 
   function handleCreateFeedback(input: FeedbackCreateInput) {
     createFeedbackMutation.mutate(input, {
@@ -29,11 +31,11 @@ function FeedbackPage() {
   return (
     <>
       <PageHeader
-        action={{ icon: "pi pi-plus", label: "Add feedback" }}
+        action={{ icon: "pi pi-plus", label: t("feedback.add") }}
         onAction={() => setIsAddDialogVisible(true)}
-        eyebrow="Feedback"
-        subtitle="Triage customer requests, identify duplicate themes, and link feedback to roadmap work."
-        title="Customer feedback inbox"
+        eyebrow={t("feedback.eyebrow")}
+        subtitle={t("feedback.page.subtitle")}
+        title={t("feedback.page.title")}
       />
 
       <FeedbackSummaryGrid summaries={feedbackSummaries} />
@@ -41,11 +43,11 @@ function FeedbackPage() {
 
       <section className="mt-4">
         {isLoading ? (
-          <LoadingState message="Loading feedback..." />
+          <LoadingState message={t("feedback.loading")} />
         ) : isError ? (
           <ErrorState
-            title="Could not load feedback"
-            message="Make sure the FastAPI backend is running on port 8000, then try again."
+            title={t("feedback.listLoadErrorTitle")}
+            message={t("feedback.listLoadErrorMessage")}
             onRetry={() => void refetch()}
           />
         ) : (

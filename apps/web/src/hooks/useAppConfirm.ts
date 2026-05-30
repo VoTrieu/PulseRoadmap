@@ -1,4 +1,5 @@
 import { confirmDialog } from "primereact/confirmdialog";
+import { useTranslation } from "react-i18next";
 
 type AppConfirmOptions = {
   acceptLabel?: string;
@@ -9,9 +10,11 @@ type AppConfirmOptions = {
 };
 
 function useAppConfirm() {
+  const { t } = useTranslation();
+
   function confirm({
-    acceptLabel = "Confirm",
-    rejectLabel = "Cancel",
+    acceptLabel = t("common.confirm"),
+    rejectLabel = t("common.cancel"),
     header,
     message,
     onAccept,

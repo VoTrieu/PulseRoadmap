@@ -2,6 +2,7 @@ import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
 import { Tag } from "primereact/tag";
 import { FEEDBACK_URGENCY_SEVERITY } from "../../constants/feedbackConstants";
+import { useTranslation } from "react-i18next";
 import type { FeedbackItem } from "../../types/dashboard";
 import { AppCard } from "../ui/AppCard";
 
@@ -32,22 +33,24 @@ function urgencyTemplate(item: FeedbackItem) {
 }
 
 function RecentFeedbackCard({ feedback }: RecentFeedbackCardProps) {
+  const { t } = useTranslation();
+
   return (
     <AppCard
       compact
-      title="Recent feedback"
-      subTitle="Prioritized customer requests"
+      title={t("dashboard.recentFeedback.title")}
+      subTitle={t("dashboard.recentFeedback.subtitle")}
     >
       <DataTable
         value={feedback}
         size="small"
         stripedRows
       >
-        <Column field="request" header="Request" style={{ minWidth: "18rem" }} />
-        <Column field="customer" header="Customer" style={{ minWidth: "11rem" }} />
-        <Column header="Area" body={areaTemplate} style={{ width: "8.5rem" }} />
-        <Column field="tier" header="Tier" style={{ width: "8rem" }} />
-        <Column header="Urgency" body={urgencyTemplate} style={{ width: "7rem" }} />
+        <Column field="request" header={t("feedback.table.request")} style={{ minWidth: "18rem" }} />
+        <Column field="customer" header={t("feedback.customer")} style={{ minWidth: "11rem" }} />
+        <Column header={t("feedback.table.area")} body={areaTemplate} style={{ width: "8.5rem" }} />
+        <Column field="tier" header={t("feedback.table.tier")} style={{ width: "8rem" }} />
+        <Column header={t("feedback.table.urgency")} body={urgencyTemplate} style={{ width: "7rem" }} />
       </DataTable>
     </AppCard>
   );

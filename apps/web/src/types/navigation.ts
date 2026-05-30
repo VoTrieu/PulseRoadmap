@@ -1,9 +1,11 @@
+import type { TranslationKey } from "../i18n/translations";
+
 type AppPage = "dashboard" | "feedback";
 
 type NavItem = {
   id: AppPage;
   path: string;
-  label: string;
+  labelKey: TranslationKey;
   icon: string;
 };
 

@@ -1,18 +1,21 @@
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { FEEDBACK_PRODUCT_AREAS, FEEDBACK_URGENCIES } from "../../constants/feedbackConstants";
+import { useTranslation } from "react-i18next";
 import { AppDropdown } from "../ui/AppDropdown";
 
-const productAreas = ["All areas", "Admin", "Roadmap", "AI", "Analytics", "Releases"];
-const urgencyOptions = ["All urgency", "High", "Medium", "Low"];
-
 function FeedbackFilters() {
+  const { t } = useTranslation();
+  const productAreas = [t("feedback.filter.allAreas"), ...FEEDBACK_PRODUCT_AREAS];
+  const urgencyOptions = [t("feedback.filter.allUrgency"), ...FEEDBACK_URGENCIES];
+
   return (
     <div className="mt-4 flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm lg:flex-row lg:items-center">
       <div className="flex min-h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">
         <i className="pi pi-search shrink-0 text-base text-slate-500" aria-hidden="true" />
         <InputText
           className="w-full border-none p-0 shadow-none"
-          placeholder="Search customer, request, source..."
+          placeholder={t("feedback.searchPlaceholder")}
         />
       </div>
       <AppDropdown
@@ -28,7 +31,7 @@ function FeedbackFilters() {
       <Button
         className="min-h-11 border-slate-300 px-4 font-bold text-slate-700"
         icon="pi pi-filter"
-        label="Filters"
+        label={t("common.filters")}
         outlined
       />
     </div>

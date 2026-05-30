@@ -1,4 +1,5 @@
 import { Tag } from "primereact/tag";
+import { useTranslation } from "react-i18next";
 import type { SeverityItem } from "../../types/dashboard";
 import { AppCard } from "../ui/AppCard";
 
@@ -7,10 +8,12 @@ type BugSeverityCardProps = {
 };
 
 function BugSeverityCard({ items }: BugSeverityCardProps) {
+  const { t } = useTranslation();
+
   return (
     <AppCard
-      title="Bug severity"
-      subTitle="Open reports by impact"
+      title={t("dashboard.bugSeverity.title")}
+      subTitle={t("dashboard.bugSeverity.subtitle")}
     >
       <div className="grid gap-3">
         {items.map((bug) => (

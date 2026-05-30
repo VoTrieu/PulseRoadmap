@@ -1,4 +1,5 @@
 import { ProgressBar } from "primereact/progressbar";
+import { useTranslation } from "react-i18next";
 import type { RoadmapItem } from "../../types/dashboard";
 import { AppCard } from "../ui/AppCard";
 
@@ -7,10 +8,12 @@ type RoadmapProgressCardProps = {
 };
 
 function RoadmapProgressCard({ items }: RoadmapProgressCardProps) {
+  const { t } = useTranslation();
+
   return (
     <AppCard
-      title="Roadmap progress"
-      subTitle="Top initiatives"
+      title={t("dashboard.roadmapProgress.title")}
+      subTitle={t("dashboard.roadmapProgress.subtitle")}
     >
       <div className="grid gap-5">
         {items.map((item) => (

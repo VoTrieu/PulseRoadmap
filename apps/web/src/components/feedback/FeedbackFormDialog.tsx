@@ -2,6 +2,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CUSTOMER_TIERS,
   DEFAULT_FEEDBACK_FORM_VALUE,
@@ -42,13 +43,14 @@ function FeedbackFormDialog({
   visible,
 }: FeedbackFormDialogProps) {
   const [form, setForm] = useState<FeedbackCreateInput>(initialValue);
+  const { t } = useTranslation();
   const isValid = Boolean(
     form.customer.trim() && form.request.trim() && form.linkedFeature.trim(),
   );
   const isCreate = mode === "create";
-  const header = isCreate ? "Add feedback" : "Edit feedback";
-  const submitLabel = isCreate ? "Add feedback" : "Save changes";
-  const submittingLabel = isCreate ? "Adding..." : "Saving...";
+  const header = isCreate ? t("feedback.add") : t("feedback.edit");
+  const submitLabel = isCreate ? t("feedback.add") : t("common.saveChanges");
+  const submittingLabel = isCreate ? t("feedback.adding") : t("common.saving");
   const submitIcon = isCreate ? "pi pi-plus" : "pi pi-save";
 
   useEffect(() => {
@@ -99,29 +101,29 @@ function FeedbackFormDialog({
     >
       <form action={submitAction} className="grid gap-4">
         <label className="grid gap-2">
-          <span className="text-sm font-semibold text-slate-700">Customer</span>
+          <span className="text-sm font-semibold text-slate-700">{t("feedback.customer")}</span>
           <InputText
             name="customer"
             value={form.customer}
             onChange={(event) => updateForm("customer", event.target.value)}
-            placeholder="Customer name"
+            placeholder={t("feedback.customerPlaceholder")}
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-semibold text-slate-700">Request</span>
+          <span className="text-sm font-semibold text-slate-700">{t("feedback.request")}</span>
           <InputText
             name="request"
             value={form.request}
             onChange={(event) => updateForm("request", event.target.value)}
-            placeholder="What did the customer ask for?"
+            placeholder={t("feedback.form.requestPlaceholder")}
           />
         </label>
 
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">
-              Product area
+              {t("feedback.form.productArea")}
             </span>
             <AppDropdown
               options={FEEDBACK_PRODUCT_AREAS}
@@ -133,7 +135,7 @@ function FeedbackFormDialog({
 
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">
-              Customer tier
+              {t("feedback.customerTier")}
             </span>
             <AppDropdown
               options={CUSTOMER_TIERS}
@@ -145,7 +147,7 @@ function FeedbackFormDialog({
 
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">
-              Sentiment
+              {t("feedback.sentiment")}
             </span>
             <AppDropdown
               options={FEEDBACK_SENTIMENTS}
@@ -157,7 +159,7 @@ function FeedbackFormDialog({
 
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">
-              Urgency
+              {t("feedback.urgency")}
             </span>
             <AppDropdown
               options={FEEDBACK_URGENCIES}
@@ -168,7 +170,7 @@ function FeedbackFormDialog({
           </label>
 
           <label className="grid gap-2">
-            <span className="text-sm font-semibold text-slate-700">Source</span>
+            <span className="text-sm font-semibold text-slate-700">{t("feedback.source")}</span>
             <AppDropdown
               options={FEEDBACK_SOURCES}
               value={form.source}
@@ -179,7 +181,7 @@ function FeedbackFormDialog({
 
           <label className="grid gap-2">
             <span className="text-sm font-semibold text-slate-700">
-              Received
+              {t("feedback.form.received")}
             </span>
             <InputText
               name="receivedAt"
@@ -192,7 +194,7 @@ function FeedbackFormDialog({
 
         <label className="grid gap-2">
           <span className="text-sm font-semibold text-slate-700">
-            Linked feature
+            {t("feedback.linkedFeature")}
           </span>
           <InputText
             name="linkedFeature"
@@ -200,12 +202,12 @@ function FeedbackFormDialog({
             onChange={(event) =>
               updateForm("linkedFeature", event.target.value)
             }
-            placeholder="Roadmap item or feature idea"
+            placeholder={t("feedback.linkedFeaturePlaceholder")}
           />
         </label>
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button label="Cancel" onClick={handleHide} outlined type="button" />
+          <Button label={t("common.cancel")} onClick={handleHide} outlined type="button" />
           <Button
             disabled={!isValid || isSubmitting}
             icon={isSubmitting ? "pi pi-spin pi-spinner" : submitIcon}

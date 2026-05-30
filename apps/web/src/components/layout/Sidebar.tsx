@@ -1,5 +1,6 @@
 import { Button } from "primereact/button";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { navItems } from "../../routes";
 
 type SidebarProps = {
@@ -8,6 +9,8 @@ type SidebarProps = {
 };
 
 function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const { t } = useTranslation();
+
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-40 w-70 overflow-hidden border-r border-slate-200 bg-white py-6 transition-[transform,width,padding,opacity] duration-300 ease-out lg:static lg:z-auto lg:min-h-screen lg:shrink-0 ${
@@ -29,11 +32,13 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
             <div>
               <strong className="block text-lg text-slate-950">PulseRoadmap</strong>
-              <span className="text-sm text-slate-500">Product operations</span>
+              <span className="text-sm text-slate-500">
+                {t("app.productOperations")}
+              </span>
             </div>
           </div>
           <Button
-            aria-label="Close navigation"
+            aria-label={t("layout.closeNavigation")}
             className="h-9 w-9 text-slate-500 lg:hidden"
             icon="pi pi-times"
             onClick={onClose}
@@ -42,16 +47,18 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
           />
         </div>
 
-        <nav className="grid gap-1" aria-label="Main navigation">
+        <nav className="grid gap-1" aria-label={t("layout.mainNavigation")}>
           {navItems.map((item) => (
             <NavLink key={item.id} to={item.path}>
               {({ isActive }) => (
                 <Button
                   className={`min-h-12 w-full justify-start gap-3 border-0 text-left shadow-none ${
-                    isActive ? "bg-teal-50 text-teal-950" : "bg-transparent text-slate-600 hover:bg-slate-100"
+                    isActive
+                      ? "bg-teal-50 text-teal-950"
+                      : "bg-transparent text-slate-600 hover:bg-slate-100"
                   }`}
                   icon={item.icon}
-                  label={item.label}
+                  label={t(item.labelKey)}
                   text
                 />
               )}

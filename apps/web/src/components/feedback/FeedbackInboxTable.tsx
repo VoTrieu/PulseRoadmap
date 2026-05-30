@@ -6,6 +6,7 @@ import {
   FEEDBACK_SENTIMENT_SEVERITY,
   FEEDBACK_URGENCY_SEVERITY,
 } from "../../constants/feedbackConstants";
+import { useTranslation } from "react-i18next";
 import type { FeedbackInboxItem } from "../../types/feedback";
 import { AppCard } from "../ui/AppCard";
 
@@ -39,54 +40,56 @@ function sentimentTemplate(item: FeedbackInboxItem) {
   );
 }
 
-function requestTemplate(item: FeedbackInboxItem) {
-  return (
-    <div>
-      <Link
-        to={`/feedback/${item.id}`}
-        className="font-semibold text-slate-900 hover:text-teal-700"
-      >
-        {item.request}
-      </Link>
-      <span className="mt-1 block text-xs text-slate-500">
-        Linked to {item.linkedFeature}
-      </span>
-    </div>
-  );
-}
-
 function FeedbackInboxTable({ feedback }: FeedbackInboxTableProps) {
+  const { t } = useTranslation();
+
+  function requestTemplate(item: FeedbackInboxItem) {
+    return (
+      <div>
+        <Link
+          to={`/feedback/${item.id}`}
+          className="font-semibold text-slate-900 hover:text-teal-700"
+        >
+          {item.request}
+        </Link>
+        <span className="mt-1 block text-xs text-slate-500">
+          {t("feedback.linkedFeaturePrefix")} {item.linkedFeature}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <AppCard
       compact
-      title="Feedback inbox"
-      subTitle="Customer requests ready for product review"
+      title={t("feedback.inbox.title")}
+      subTitle={t("feedback.inbox.subtitle")}
     >
       <DataTable value={feedback} size="small" stripedRows>
         <Column
-          header="Request"
+          header={t("feedback.table.request")}
           body={requestTemplate}
           style={{ minWidth: "22rem" }}
         />
         <Column
           field="customer"
-          header="Customer"
+          header={t("feedback.customer")}
           style={{ minWidth: "11rem" }}
         />
-        <Column field="productArea" header="Area" style={{ width: "8rem" }} />
-        <Column field="tier" header="Tier" style={{ width: "8rem" }} />
+        <Column field="productArea" header={t("feedback.table.area")} style={{ width: "8rem" }} />
+        <Column field="tier" header={t("feedback.table.tier")} style={{ width: "8rem" }} />
         <Column
-          header="Sentiment"
+          header={t("feedback.sentiment")}
           body={sentimentTemplate}
           style={{ width: "8rem" }}
         />
         <Column
-          header="Urgency"
+          header={t("feedback.table.urgency")}
           body={urgencyTemplate}
           style={{ width: "7rem" }}
         />
-        <Column field="source" header="Source" style={{ width: "9rem" }} />
-        <Column field="receivedAt" header="Received" style={{ width: "8rem" }} />
+        <Column field="source" header={t("feedback.source")} style={{ width: "9rem" }} />
+        <Column field="receivedAt" header={t("feedback.table.received")} style={{ width: "8rem" }} />
       </DataTable>
     </AppCard>
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import type { Insight } from "../../types/dashboard";
 import { AppCard } from "../ui/AppCard";
 
@@ -6,11 +7,13 @@ type AiInsightsCardProps = {
 };
 
 function AiInsightsCard({ insights }: AiInsightsCardProps) {
+  const { t } = useTranslation();
+
   return (
     <AppCard
       className="row-span-2"
-      title="AI insights"
-      subTitle="Suggested next actions"
+      title={t("dashboard.aiInsights.title")}
+      subTitle={t("dashboard.aiInsights.subtitle")}
     >
       <div className="grid gap-5">
         {insights.map((insight) => (
