@@ -8,6 +8,7 @@ import {
 } from "../services/feedbackApi";
 import type {
   FeedbackCreateInput,
+  FeedbackListFilters,
   FeedbackUpdateInput,
 } from "../types/feedback";
 import { queryKeys } from "./queryKeys";
@@ -17,10 +18,10 @@ type UpdateFeedbackVariables = {
   input: FeedbackUpdateInput;
 };
 
-function useFeedbackList() {
+function useFeedbackList(filters: FeedbackListFilters) {
   return useQuery({
-    queryKey: queryKeys.feedback.list(),
-    queryFn: getFeedback,
+    queryKey: queryKeys.feedback.list(filters),
+    queryFn: () => getFeedback(filters),
   });
 }
 

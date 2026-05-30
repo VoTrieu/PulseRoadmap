@@ -1,14 +1,39 @@
 from uuid import uuid4
 
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.data.models.feedback import Feedback
 from app.schemas.feedback import FeedbackCreate, FeedbackUpdate
 
 
-def list_feedbacks(db: Session) -> list[Feedback]:
-    statement = select(Feedback).order_by(
+def list_feedbacks(
+    db: Session,
+    search: str | None = None,
+    product_area: str | None = None,
+    urgency: str | None = None,
+) -> list[Feedback]:
+    statement = select(Feedback)
+    search_value = search.strip() if search else None
+
+    if search_value:
+        pattern = f"%{search_value}%"
+        statement = statement.where(
+            or_(
+                Feedback.customer.ilike(pattern),
+                Feedback.request.ilike(pattern),
+                Feedback.source.ilike(pattern),
+                Feedback.linked_feature.ilike(pattern),
+            )
+        )
+
+    if product_area:
+        statement = statement.where(Feedback.product_area == product_area)
+
+    if urgency:
+        statement = statement.where(Feedback.urgency == urgency)
+
+    statement = statement.order_by(
         Feedback.created_at.desc(),
         Feedback.id.desc(),
     )

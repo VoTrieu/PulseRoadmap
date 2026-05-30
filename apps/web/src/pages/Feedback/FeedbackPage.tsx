@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FeedbackFormDialog } from "../../components/feedback/FeedbackFormDialog";
 import { FeedbackFilters } from "../../components/feedback/FeedbackFilters";
 import { FeedbackInboxTable } from "../../components/feedback/FeedbackInboxTable";
@@ -8,17 +8,24 @@ import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { feedbackSummaries } from "../../data/feedbackSampleData";
 import { useTranslation } from "react-i18next";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 import { useCreateFeedback, useFeedbackList } from "../../queries/feedbackQueries";
-import type { FeedbackCreateInput } from "../../types/feedback";
+import type { FeedbackCreateInput, FeedbackListFilters } from "../../types/feedback";
 
 function FeedbackPage() {
+  const [filters, setFilters] = useState<FeedbackListFilters>({ search: "" });
   const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
+  const debouncedSearch = useDebouncedValue(filters.search);
+  const queryFilters = useMemo(
+    () => ({ ...filters, search: debouncedSearch }),
+    [debouncedSearch, filters],
+  );
   const {
     data: feedback = [],
     isError,
     isLoading,
     refetch,
-  } = useFeedbackList();
+  } = useFeedbackList(queryFilters);
   const createFeedbackMutation = useCreateFeedback();
   const { t } = useTranslation();
 
@@ -39,7 +46,7 @@ function FeedbackPage() {
       />
 
       <FeedbackSummaryGrid summaries={feedbackSummaries} />
-      <FeedbackFilters />
+      <FeedbackFilters value={filters} onChange={setFilters} />
 
       <section className="mt-4">
         {isLoading ? (

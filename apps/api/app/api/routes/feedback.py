@@ -3,14 +3,29 @@ from sqlalchemy.orm import Session
 
 from app.data.db.session import get_db
 from app.data.repositories import feedback_repository
-from app.schemas.feedback import FeedbackCreate, FeedbackItem, FeedbackUpdate
+from app.schemas.feedback import (
+    FeedbackCreate,
+    FeedbackItem,
+    FeedbackUpdate,
+    FeedbackUrgency,
+)
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 
 
 @router.get("", response_model=list[FeedbackItem])
-def list_feedback(db: Session = Depends(get_db)) -> list[FeedbackItem]:
-    return feedback_repository.list_feedbacks(db)
+def list_feedback(
+    search: str | None = None,
+    product_area: str | None = None,
+    urgency: FeedbackUrgency | None = None,
+    db: Session = Depends(get_db),
+) -> list[FeedbackItem]:
+    return feedback_repository.list_feedbacks(
+        db,
+        search=search,
+        product_area=product_area,
+        urgency=urgency,
+    )
 
 
 @router.post("", response_model=FeedbackItem, status_code=201)
@@ -45,9 +60,8 @@ def update_feedback(
     feedback_id: str, payload: FeedbackUpdate, db: Session = Depends(get_db)
 ) -> FeedbackItem:
     feedback = feedback_repository.update_feedback(db, feedback_id, payload)
-    
+
     if feedback is None:
         raise HTTPException(status_code=404, detail="Feedback not found")
-    
-    return feedback
 
+    return feedback

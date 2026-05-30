@@ -19,6 +19,12 @@ type FeedbackCreateInput = Omit<FeedbackInboxItem, "id">;
 
 type FeedbackUpdateInput = Partial<FeedbackCreateInput>;
 
+type FeedbackListFilters = {
+  productArea?: string;
+  search: string;
+  urgency?: FeedbackUrgency;
+};
+
 type FeedbackSummary = {
   label: string;
   value: string;
@@ -30,6 +36,7 @@ export type {
   CustomerTier,
   FeedbackCreateInput,
   FeedbackInboxItem,
+  FeedbackListFilters,
   FeedbackSentiment,
   FeedbackSummary,
   FeedbackUrgency,

@@ -7,13 +7,26 @@ import {
 import type {
   FeedbackCreateInput,
   FeedbackInboxItem,
+  FeedbackListFilters,
   FeedbackUpdateInput,
 } from "../types/feedback";
 import type { FeedbackApiItem } from "../types/feedbackApi";
 import { apiClient } from "./apiClient";
 
-async function getFeedback(): Promise<FeedbackInboxItem[]> {
-  const response = await apiClient.get<FeedbackApiItem[]>("/feedback");
+function toFeedbackQueryParams(filters?: FeedbackListFilters) {
+  return {
+    product_area: filters?.productArea || undefined,
+    search: filters?.search.trim() || undefined,
+    urgency: filters?.urgency || undefined,
+  };
+}
+
+async function getFeedback(
+  filters?: FeedbackListFilters,
+): Promise<FeedbackInboxItem[]> {
+  const response = await apiClient.get<FeedbackApiItem[]>("/feedback", {
+    params: toFeedbackQueryParams(filters),
+  });
 
   return mapFeedbackApiItemsToInboxItems(response.data);
 }
