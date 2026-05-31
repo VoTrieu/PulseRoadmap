@@ -1,6 +1,5 @@
 import {
   mapFeedbackApiItemToInboxItem,
-  mapFeedbackApiItemsToInboxItems,
   mapFeedbackCreateInputToApiPayload,
   mapFeedbackListApiResponseToListResponse,
   mapFeedbackUpdateInputToApiPayload,

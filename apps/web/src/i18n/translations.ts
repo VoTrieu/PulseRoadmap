@@ -70,6 +70,7 @@ const en = {
     "feedback.delete.message": "This feedback item will be permanently deleted.",
     "feedback.request": "Request",
     "feedback.urgency": "Urgency",
+    "feedback.empty": "No feedback found",
     "toast.requestFailed": "Request failed",
     "toast.somethingWentWrong": "Something went wrong"
   } as const;
@@ -148,6 +149,7 @@ const fr = {
     "feedback.delete.message": "Ce retour sera supprime definitivement.",
     "feedback.request": "Demande",
     "feedback.urgency": "Urgence",
+    "feedback.empty": "Aucun retour trouve",
     "toast.requestFailed": "Requete echouee",
     "toast.somethingWentWrong": "Une erreur est survenue"
   } satisfies Record<TranslationKey, string>;

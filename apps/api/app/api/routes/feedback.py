@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
 from app.core.pagination import paginate
@@ -20,8 +20,8 @@ def list_feedback(
     search: str | None = None,
     product_area: str | None = None,
     urgency: FeedbackUrgency | None = None,
-    skip: int = 0,
-    take: int = 10,
+    skip: int = Query(default=0, ge=0),
+    take: int = Query(default=10, ge=1, le=100),
     db: Session = Depends(get_db),
 ) -> FeedbackListResponse:
     items, total = feedback_repository.list_feedbacks(
@@ -32,7 +32,7 @@ def list_feedback(
         skip=skip,
         take=take,
     )
-    
+
     return FeedbackListResponse(**paginate(items, total, skip, take))
 
 

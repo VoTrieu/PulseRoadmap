@@ -1,5 +1,5 @@
 from typing import Literal
-
+from app.schemas.pagination import PaginatedResponse
 from pydantic import BaseModel
 
 FeedbackSentiment = Literal["Positive", "Neutral", "Negative"]
@@ -46,10 +46,4 @@ class FeedbackItem(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class FeedbackListResponse(BaseModel):
-    """Concrete paginated response for feedback items."""
-    items: list[FeedbackItem]
-    total: int
-    page: int
-    page_size: int
-    total_pages: int
+FeedbackListResponse = PaginatedResponse[FeedbackItem]

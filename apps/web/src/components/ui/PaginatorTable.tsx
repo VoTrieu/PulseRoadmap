@@ -10,6 +10,8 @@ type PaginatorTableProps<T extends DataTableValue> = {
   first: number;
   children: ReactNode;
   rowsPerPageOptions?: number[];
+  rows: number;
+  emptyMessage?: string;
 };
 
 const DEFAULT_ROWS_PER_PAGE = 10;
@@ -23,6 +25,8 @@ function PaginatorTable<T extends DataTableValue>({
   first,
   children,
   rowsPerPageOptions = DEFAULT_ROWS_OPTIONS,
+  rows,
+  emptyMessage,
 }: PaginatorTableProps<T>) {
   function onDataTablePageChange(event: DataTableStateEvent) {
     const newFirst = event.first ?? 0;
@@ -39,13 +43,14 @@ function PaginatorTable<T extends DataTableValue>({
       lazy
       paginator
       first={first}
-      rows={DEFAULT_ROWS_PER_PAGE}
+      rows={rows}
       totalRecords={totalRecords}
       loading={isLoading}
       onPage={onDataTablePageChange}
       paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
       rowsPerPageOptions={rowsPerPageOptions}
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} items"
+      emptyMessage={emptyMessage}
     >
       {children}
     </DataTable>

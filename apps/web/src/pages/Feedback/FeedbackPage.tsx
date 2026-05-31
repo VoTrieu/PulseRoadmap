@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FeedbackFormDialog } from "../../components/feedback/FeedbackFormDialog";
 import { FeedbackFilters } from "../../components/feedback/FeedbackFilters";
 import { FeedbackInboxTable } from "../../components/feedback/FeedbackInboxTable";
@@ -7,14 +8,23 @@ import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import { feedbackSummaries } from "../../data/feedbackSampleData";
-import { useTranslation } from "react-i18next";
 import { useDebouncedValue } from "../../hooks/useDebouncedValue";
-import { useCreateFeedback, useFeedbackList } from "../../queries/feedbackQueries";
-import type { FeedbackCreateInput, FeedbackListFilters, PaginationParams } from "../../types/feedback";
+import {
+  useCreateFeedback,
+  useFeedbackList,
+} from "../../queries/feedbackQueries";
+import type {
+  FeedbackCreateInput,
+  FeedbackListFilters,
+  PaginationParams,
+} from "../../types/feedback";
 
 function FeedbackPage() {
   const [filters, setFilters] = useState<FeedbackListFilters>({ search: "" });
-  const [pagination, setPagination] = useState<PaginationParams>({ skip: 0, take: 10 });
+  const [pagination, setPagination] = useState<PaginationParams>({
+    skip: 0,
+    take: 10,
+  });
   const [isAddDialogVisible, setIsAddDialogVisible] = useState(false);
   const debouncedSearch = useDebouncedValue(filters.search);
   const queryFilters = useMemo(
@@ -24,6 +34,7 @@ function FeedbackPage() {
   const {
     data: feedbackResponse,
     isError,
+    isFetching,
     isLoading,
     refetch,
   } = useFeedbackList(queryFilters, pagination);
@@ -40,6 +51,11 @@ function FeedbackPage() {
     setPagination(newPagination);
   }
 
+  function handleFiltersChange(nextFilters: FeedbackListFilters) {
+    setFilters(nextFilters);
+    setPagination((current) => ({ ...current, skip: 0 }));
+  }
+
   const feedback = feedbackResponse?.items ?? [];
   const totalRecords = feedbackResponse?.total ?? 0;
 
@@ -54,7 +70,7 @@ function FeedbackPage() {
       />
 
       <FeedbackSummaryGrid summaries={feedbackSummaries} />
-      <FeedbackFilters value={filters} onChange={setFilters} />
+      <FeedbackFilters value={filters} onChange={handleFiltersChange} />
 
       <section className="mt-4">
         {isLoading ? (
@@ -69,8 +85,9 @@ function FeedbackPage() {
           <FeedbackInboxTable
             feedback={feedback}
             totalRecords={totalRecords}
-            isLoading={isLoading}
+            isLoading={isFetching}
             onPageChange={handlePageChange}
+            rows={pagination.take}
           />
         )}
       </section>

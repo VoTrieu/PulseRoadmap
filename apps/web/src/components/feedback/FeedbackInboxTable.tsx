@@ -16,6 +16,7 @@ type FeedbackInboxTableProps = {
   totalRecords: number;
   isLoading: boolean;
   onPageChange: (params: PaginationParams) => void;
+  rows: number;
 };
 
 function urgencyTemplate(item: FeedbackInboxItem) {
@@ -49,6 +50,7 @@ function FeedbackInboxTable({
   totalRecords,
   isLoading,
   onPageChange,
+  rows,
 }: FeedbackInboxTableProps) {
   const { t } = useTranslation();
   const [first, setFirst] = useState(0);
@@ -86,6 +88,8 @@ function FeedbackInboxTable({
         isLoading={isLoading}
         onPageChange={handlePageChange}
         first={first}
+        rows={rows}
+        emptyMessage={t("feedback.empty")}
       >
         <Column
           header={t("feedback.table.request")}
