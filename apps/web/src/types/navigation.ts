@@ -1,6 +1,6 @@
 import type { TranslationKey } from "../i18n/translations";
 
-type AppPage = "dashboard" | "feedback";
+type AppPage = "dashboard" | "feedback" | "roadmap";
 
 type NavItem = {
   id: AppPage;

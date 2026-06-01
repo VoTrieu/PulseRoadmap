@@ -3,6 +3,7 @@ import type { NavItem } from "./types/navigation";
 const appRoutes = {
   dashboard: "/",
   feedback: "/feedback",
+  roadmap: "/roadmap",
 } as const;
 
 const navItems: NavItem[] = [
@@ -17,6 +18,12 @@ const navItems: NavItem[] = [
     path: appRoutes.feedback,
     labelKey: "nav.feedback",
     icon: "pi pi-inbox",
+  },
+  {
+    id: "roadmap",
+    path: appRoutes.roadmap,
+    labelKey: "nav.roadmap",
+    icon: "pi pi-sitemap",
   },
 ];
 

@@ -3,6 +3,7 @@ import { AppLayout } from "./components/layout/AppLayout";
 import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 import { FeedbackPage } from "./pages/Feedback/FeedbackPage";
 import { FeedbackDetailPage } from "./pages/Feedback/FeedbackDetailPage";
+import { RoadmapPage } from "./pages/Roadmap/RoadmapPage";
 import { appRoutes } from "./routes";
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route index element={<DashboardPage />} />
           <Route path={appRoutes.feedback} element={<FeedbackPage />} />
           <Route path="/feedback/:feedbackId" element={<FeedbackDetailPage />} />
+          <Route path={appRoutes.roadmap} element={<RoadmapPage />} />
           <Route path="*" element={<Navigate replace to={appRoutes.dashboard} />} />
         </Route>
       </Routes>
