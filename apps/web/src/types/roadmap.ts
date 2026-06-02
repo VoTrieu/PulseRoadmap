@@ -17,6 +17,10 @@ type RoadmapFeature = {
   strategicValue: number;
 };
 
+type RoadmapFeatureCreateInput = Omit<RoadmapFeature, "id">;
+
+type RoadmapFeatureUpdateInput = Partial<RoadmapFeatureCreateInput>;
+
 type RoadmapSummary = {
   label: string;
   value: string;
@@ -24,4 +28,11 @@ type RoadmapSummary = {
   icon: string;
 };
 
-export type { RoadmapFeature, RoadmapPriority, RoadmapStatus, RoadmapSummary };
+export type {
+  RoadmapFeature,
+  RoadmapPriority,
+  RoadmapStatus,
+  RoadmapSummary,
+  RoadmapFeatureCreateInput,
+  RoadmapFeatureUpdateInput,
+};
