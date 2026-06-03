@@ -7,6 +7,7 @@ import {
   useRoadmapFeatureList,
   useCreateRoadmapFeature,
   useUpdateRoadmapFeature,
+  useDeleteRoadmapFeature,
 } from "../../queries/roadmapQueries";
 import {
   roadmapStatuses,
@@ -19,6 +20,7 @@ import type {
   RoadmapFeature,
   RoadmapFeatureCreateInput,
 } from "../../types/roadmap";
+import { useAppConfirm } from "../../hooks/useAppConfirm";
 
 function RoadmapPage() {
   const { t } = useTranslation();
@@ -28,13 +30,15 @@ function RoadmapPage() {
     isLoading,
     refetch,
   } = useRoadmapFeatureList();
+  const { confirm } = useAppConfirm();
 
   const [isCreateDialogVisible, setIsCreateDialogVisible] = useState(false);
-  const createRoadmapFeatureMutation = useCreateRoadmapFeature();
   const [editingFeature, setEditingFeature] = useState<RoadmapFeature | null>(
     null,
   );
+  const createRoadmapFeatureMutation = useCreateRoadmapFeature();
   const updateRoadmapFeatureMutation = useUpdateRoadmapFeature();
+  const deleteRoadmapFeatureMutation = useDeleteRoadmapFeature();
 
   function handleCreateRoadmapFeature(input: RoadmapFeatureCreateInput) {
     createRoadmapFeatureMutation.mutate(input, {
@@ -51,6 +55,15 @@ function RoadmapPage() {
         onSuccess: () => setEditingFeature(null),
       },
     );
+  }
+
+  function handleDeleteRoadmapFeature(feature: RoadmapFeature) {
+    confirm({
+      acceptLabel: t("common.delete"),
+      header: t("roadmap.delete.header"),
+      message: t("roadmap.delete.message"),
+      onAccept: () => deleteRoadmapFeatureMutation.mutate(feature.id),
+    });
   }
 
   return (
@@ -78,6 +91,7 @@ function RoadmapPage() {
           features={roadmapFeatures}
           statuses={roadmapStatuses}
           onEditFeature={setEditingFeature}
+          onDeleteFeature={handleDeleteRoadmapFeature}
         />
       )}
 

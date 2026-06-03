@@ -109,6 +109,8 @@ const en = {
 "roadmap.form.revenueImpact": "Revenue impact",
 "roadmap.form.effort": "Effort",
 "roadmap.form.strategicValue": "Strategic value",
+"roadmap.delete.header": "Delete feature",
+"roadmap.delete.message": "This roadmap feature will be permanently deleted.",
 } as const;
 
 type TranslationKey = keyof typeof en;
@@ -226,6 +228,8 @@ const fr = {
 "roadmap.form.revenueImpact": "Impact revenu",
 "roadmap.form.effort": "Effort",
 "roadmap.form.strategicValue": "Valeur strategique",
+"roadmap.delete.header": "Supprimer la fonctionnalite",
+"roadmap.delete.message": "Cette fonctionnalite roadmap sera supprimee definitivement.",
 } satisfies Record<TranslationKey, string>;
 
 const resources = {
