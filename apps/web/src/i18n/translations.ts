@@ -91,6 +91,24 @@ const en = {
   "roadmap.listLoadErrorTitle": "Could not load roadmap",
   "roadmap.listLoadErrorMessage":
     "Make sure the FastAPI backend is running on port 8000, then try again.",
+  "roadmap.create": "Create feature",
+"roadmap.edit": "Edit feature",
+"roadmap.creating": "Creating...",
+"roadmap.form.title": "Title",
+"roadmap.form.titlePlaceholder": "Feature name",
+"roadmap.form.description": "Description",
+"roadmap.form.descriptionPlaceholder": "What problem does this feature solve?",
+"roadmap.form.owner": "Owner",
+"roadmap.form.ownerPlaceholder": "Feature owner",
+"roadmap.form.milestone": "Milestone",
+"roadmap.form.milestonePlaceholder": "Q2 Platform",
+"roadmap.form.status": "Status",
+"roadmap.form.priority": "Priority",
+"roadmap.form.productArea": "Product area",
+"roadmap.form.linkedFeedbackCount": "Linked feedback",
+"roadmap.form.revenueImpact": "Revenue impact",
+"roadmap.form.effort": "Effort",
+"roadmap.form.strategicValue": "Strategic value",
 } as const;
 
 type TranslationKey = keyof typeof en;
@@ -190,6 +208,24 @@ const fr = {
   "roadmap.listLoadErrorTitle": "Impossible de charger la roadmap",
   "roadmap.listLoadErrorMessage":
     "Verifiez que le backend FastAPI fonctionne sur le port 8000, puis reessayez.",
+  "roadmap.create": "Creer une fonctionnalite",
+"roadmap.edit": "Modifier la fonctionnalite",
+"roadmap.creating": "Creation...",
+"roadmap.form.title": "Titre",
+"roadmap.form.titlePlaceholder": "Nom de la fonctionnalite",
+"roadmap.form.description": "Description",
+"roadmap.form.descriptionPlaceholder": "Quel probleme cette fonctionnalite resout-elle ?",
+"roadmap.form.owner": "Responsable",
+"roadmap.form.ownerPlaceholder": "Responsable de la fonctionnalite",
+"roadmap.form.milestone": "Jalon",
+"roadmap.form.milestonePlaceholder": "Q2 Platform",
+"roadmap.form.status": "Statut",
+"roadmap.form.priority": "Priorite",
+"roadmap.form.productArea": "Zone produit",
+"roadmap.form.linkedFeedbackCount": "Retours lies",
+"roadmap.form.revenueImpact": "Impact revenu",
+"roadmap.form.effort": "Effort",
+"roadmap.form.strategicValue": "Valeur strategique",
 } satisfies Record<TranslationKey, string>;
 
 const resources = {
