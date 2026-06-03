@@ -2,15 +2,22 @@ import { useTranslation } from "react-i18next";
 import { RoadmapBoard } from "../../components/roadmap/RoadmapBoard";
 import { RoadmapSummaryGrid } from "../../components/roadmap/RoadmapSummaryGrid";
 import { PageHeader } from "../../components/ui/PageHeader";
+import { useRoadmapFeatureList } from "../../queries/roadmapQueries";
 import {
-  roadmapFeatures,
   roadmapStatuses,
   roadmapSummaries,
 } from "../../data/roadmapSampleData";
+import { LoadingState } from "../../components/ui/LoadingState";
+import { ErrorState } from "../../components/ui/ErrorState";
 
 function RoadmapPage() {
   const { t } = useTranslation();
-
+  const {
+    data: roadmapFeatures = [],
+    isError,
+    isLoading,
+    refetch,
+  } = useRoadmapFeatureList();
   return (
     <>
       <PageHeader
@@ -20,7 +27,22 @@ function RoadmapPage() {
         title={t("roadmap.page.title")}
       />
       <RoadmapSummaryGrid summaries={roadmapSummaries} />
-      <RoadmapBoard features={roadmapFeatures} statuses={roadmapStatuses} />
+
+      {isLoading ? (
+        <LoadingState message={t("roadmap.loading")} />
+      ) : isError ? (
+        <ErrorState
+          title={t("roadmap.listLoadErrorTitle")}
+          message={t("roadmap.listLoadErrorMessage")}
+          onRetry={() => void refetch()}
+        />
+      ) : (
+        <RoadmapBoard
+          emptyMessage={t("roadmap.empty")}
+          features={roadmapFeatures}
+          statuses={roadmapStatuses}
+        />
+      )}
     </>
   );
 }
