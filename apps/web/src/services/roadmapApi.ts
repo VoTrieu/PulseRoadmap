@@ -38,7 +38,7 @@ async function updateRoadmapFeature(
   roadmapFeatureId: string,
   input: RoadmapFeatureUpdateInput,
 ): Promise<RoadmapFeature> {
-  const response = await apiClient.put<RoadmapFeatureApiItem>(
+  const response = await apiClient.patch<RoadmapFeatureApiItem>(
     `/roadmap/${roadmapFeatureId}`,
     mapRoadmapFeatureCreateInputToApiPayload(
       input as RoadmapFeatureCreateInput,

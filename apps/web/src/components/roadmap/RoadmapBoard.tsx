@@ -5,9 +5,10 @@ type RoadmapBoardProps = {
   emptyMessage?: string;
   features: RoadmapFeature[];
   statuses: RoadmapStatus[];
+  onEditFeature: (feature: RoadmapFeature) => void;
 };
 
-function RoadmapBoard({ features, statuses, emptyMessage }: RoadmapBoardProps) {
+function RoadmapBoard({ features, statuses, emptyMessage, onEditFeature }: RoadmapBoardProps) {
   if (!features.length) {
     return (
       <section className="mt-4 rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-500">
@@ -36,7 +37,7 @@ function RoadmapBoard({ features, statuses, emptyMessage }: RoadmapBoardProps) {
             </div>
             <div className="grid gap-3">
               {statusFeatures.map((feature) => (
-                <RoadmapFeatureCard feature={feature} key={feature.id} />
+                <RoadmapFeatureCard feature={feature} key={feature.id} onEdit={onEditFeature} />
               ))}
             </div>
           </div>
