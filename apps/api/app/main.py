@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import feedback, health, roadmap
+from app.api.routes import bugs, feedback, health, roadmap
 from app.core.config import settings
 from app.data.db.init_db import init_db
 
@@ -31,9 +31,9 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(feedback.router, prefix="/api")
     app.include_router(roadmap.router, prefix="/api")
+    app.include_router(bugs.router, prefix="/api")
 
     return app
 
 
 app = create_app()
-
