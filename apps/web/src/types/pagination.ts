@@ -6,9 +6,17 @@ type PaginatedResponse<T> = {
   totalPages: number;
 };
 
+type PaginatedApiResponse<T> = {
+  items: T[];
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+};
+
 type PaginationParams = {
   skip: number;
   take: number;
 };
 
-export type { PaginatedResponse, PaginationParams };
+export type { PaginatedApiResponse, PaginatedResponse, PaginationParams };

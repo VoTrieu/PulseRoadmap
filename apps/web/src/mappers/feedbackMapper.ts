@@ -10,6 +10,7 @@ import type {
   FeedbackListApiResponse,
   FeedbackUpdateApiPayload,
 } from "../types/feedbackApi";
+import { mapPaginatedApiResponse } from "./paginationMapper";
 
 function mapFeedbackApiItemToInboxItem(
   item: FeedbackApiItem,
@@ -37,13 +38,7 @@ function mapFeedbackApiItemsToInboxItems(
 function mapFeedbackListApiResponseToListResponse(
   response: FeedbackListApiResponse,
 ): FeedbackListResponse {
-  return {
-    items: mapFeedbackApiItemsToInboxItems(response.items),
-    total: response.total,
-    page: response.page,
-    pageSize: response.page_size,
-    totalPages: response.total_pages,
-  };
+  return mapPaginatedApiResponse(response, mapFeedbackApiItemToInboxItem);
 }
 
 function mapFeedbackCreateInputToApiPayload(

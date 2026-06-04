@@ -1,4 +1,5 @@
 import type { PaginatedResponse, PaginationParams } from "./pagination";
+import type { SummaryItem } from "./summary";
 
 type FeedbackSentiment = "Positive" | "Neutral" | "Negative";
 type FeedbackUrgency = "High" | "Medium" | "Low";
@@ -30,12 +31,7 @@ type FeedbackListFilters = {
 // Use generic pagination type
 type FeedbackListResponse = PaginatedResponse<FeedbackInboxItem>;
 
-type FeedbackSummary = {
-  label: string;
-  value: string;
-  helper: string;
-  icon: string;
-};
+type FeedbackSummary = SummaryItem;
 
 export type {
   CustomerTier,

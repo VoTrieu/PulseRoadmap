@@ -3,6 +3,7 @@ import type {
   FeedbackSentiment,
   FeedbackUrgency,
 } from "./feedback";
+import type { PaginatedApiResponse } from "./pagination";
 
 type FeedbackApiItem = {
   id: string;
@@ -21,13 +22,7 @@ type FeedbackCreateApiPayload = Omit<FeedbackApiItem, "id">;
 
 type FeedbackUpdateApiPayload = Partial<FeedbackCreateApiPayload>;
 
-type FeedbackListApiResponse = {
-  items: FeedbackApiItem[];
-  total: number;
-  page: number;
-  page_size: number;
-  total_pages: number;
-};
+type FeedbackListApiResponse = PaginatedApiResponse<FeedbackApiItem>;
 
 export type {
   FeedbackApiItem,

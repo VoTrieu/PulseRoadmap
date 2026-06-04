@@ -1,4 +1,5 @@
 import type { PaginatedResponse, PaginationParams } from "./pagination";
+import type { SummaryItem } from "./summary";
 
 type RoadmapStatus = "Discovery" | "Planned" | "In progress" | "Shipped";
 
@@ -23,12 +24,7 @@ type RoadmapFeatureCreateInput = Omit<RoadmapFeature, "id">;
 
 type RoadmapFeatureUpdateInput = Partial<RoadmapFeatureCreateInput>;
 
-type RoadmapSummary = {
-  label: string;
-  value: string;
-  helper: string;
-  icon: string;
-};
+type RoadmapSummary = SummaryItem;
 
 type RoadmapFilters = {
   priority?: RoadmapPriority;

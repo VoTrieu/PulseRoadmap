@@ -11,6 +11,7 @@ import type {
   RoadmapFeatureUpdateInput,
   RoadmapFeatureListResponse,
 } from "../types/roadmap";
+import { mapPaginatedApiResponse } from "./paginationMapper";
 
 function mapRoadmapFeatureApiItemToRoadmapFeature(
   item: RoadmapFeatureApiItem,
@@ -81,13 +82,10 @@ function mapRoadmapFeatureUpdateInputToApiPayload(
 function mapRoadmapFeatureListApiResponseToListResponse(
   response: RoadmapFeatureListApiResponse,
 ): RoadmapFeatureListResponse {
-  return {
-    items: mapRoadmapApiItemsToRoadmapFeatures(response.items),
-    total: response.total,
-    page: response.page,
-    pageSize: response.page_size,
-    totalPages: response.total_pages,
-  };
+  return mapPaginatedApiResponse(
+    response,
+    mapRoadmapFeatureApiItemToRoadmapFeature,
+  );
 }
 
 export {

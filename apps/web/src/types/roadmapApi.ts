@@ -1,4 +1,5 @@
 import type { RoadmapPriority, RoadmapStatus } from "./roadmap";
+import type { PaginatedApiResponse } from "./pagination";
 
 type RoadmapFeatureApiItem = {
   id: string;
@@ -19,13 +20,8 @@ type RoadmapFeatureCreateApiPayload = Omit<RoadmapFeatureApiItem, "id">;
 
 type RoadmapFeatureUpdateApiPayload = Partial<RoadmapFeatureCreateApiPayload>;
 
-type RoadmapFeatureListApiResponse = {
-  items: RoadmapFeatureApiItem[];
-  total: number;
-  page: number;
-  page_size: number;
-  total_pages: number;
-};
+type RoadmapFeatureListApiResponse =
+  PaginatedApiResponse<RoadmapFeatureApiItem>;
 
 export type {
   RoadmapFeatureApiItem,
