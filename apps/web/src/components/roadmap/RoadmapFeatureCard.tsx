@@ -30,7 +30,7 @@ function RoadmapFeatureCard({ feature, onEdit, onDelete }: RoadmapFeatureCardPro
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between align-items-center gap-3">
+      <div className="flex justify-between items-start gap-3">
         <div>
           <h3 className="text-base font-bold text-slate-950">
             {feature.title}

@@ -2,24 +2,35 @@ import {
   mapRoadmapApiItemsToRoadmapFeatures,
   mapRoadmapFeatureApiItemToRoadmapFeature,
   mapRoadmapFeatureCreateInputToApiPayload,
+  mapRoadmapFeatureListApiResponseToListResponse,
+  mapRoadmapFeatureUpdateInputToApiPayload,
 } from "../mappers/roadmapMapper";
 import type {
   RoadmapFeature,
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
   RoadmapFilters,
+  RoadmapFeatureListResponse,
+  PaginationParams,
 } from "../types/roadmap";
-import type { RoadmapFeatureApiItem } from "../types/roadmapApi";
+import type {
+  RoadmapFeatureApiItem,
+  RoadmapFeatureListApiResponse,
+} from "../types/roadmapApi";
 import { apiClient } from "./apiClient";
 
 async function getRoadmapFeatures(
   filters?: RoadmapFilters,
-): Promise<RoadmapFeature[]> {
-  const response = await apiClient.get<RoadmapFeatureApiItem[]>("/roadmap", {
-    params: toRoadmapFeatureQueryParams(filters),
-  });
+  pagination?: PaginationParams,
+): Promise<RoadmapFeatureListResponse> {
+  const response = await apiClient.get<RoadmapFeatureListApiResponse>(
+    "/roadmap",
+    {
+      params: toRoadmapFeatureQueryParams(filters, pagination),
+    },
+  );
 
-  return mapRoadmapApiItemsToRoadmapFeatures(response.data);
+  return mapRoadmapFeatureListApiResponseToListResponse(response.data);
 }
 
 async function getRoadmapFeatureById(id: string): Promise<RoadmapFeature> {
@@ -45,9 +56,7 @@ async function updateRoadmapFeature(
 ): Promise<RoadmapFeature> {
   const response = await apiClient.patch<RoadmapFeatureApiItem>(
     `/roadmap/${roadmapFeatureId}`,
-    mapRoadmapFeatureCreateInputToApiPayload(
-      input as RoadmapFeatureCreateInput,
-    ),
+    mapRoadmapFeatureUpdateInputToApiPayload(input),
   );
 
   return mapRoadmapFeatureApiItemToRoadmapFeature(response.data);
@@ -57,12 +66,17 @@ async function deleteRoadmapFeature(roadmapFeatureId: string): Promise<void> {
   await apiClient.delete(`/roadmap/${roadmapFeatureId}`);
 }
 
-function toRoadmapFeatureQueryParams(filters?: RoadmapFilters) {
+function toRoadmapFeatureQueryParams(
+  filters?: RoadmapFilters,
+  pagination?: PaginationParams,
+) {
   return {
     search: filters?.search.trim() || undefined,
     status: filters?.status || undefined,
     priority: filters?.priority || undefined,
     product_area: filters?.productArea || undefined,
+    skip: pagination?.skip ?? 0,
+    take: pagination?.take ?? 10,
   };
 }
 

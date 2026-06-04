@@ -1,27 +1,37 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
 from app.schemas.roadmap import (
     RoadmapFeatureCreate,
     RoadmapFeatureItem,
     RoadmapFeatureUpdate,
+    RoadmapFeatureListResponse,
+    RoadmapStatus,
+    RoadmapPriority,
 )
 from app.data.db.session import get_db
 from app.data.repositories import roadmap_repository
+from app.core.pagination import paginate
 
 
 router = APIRouter(prefix="/roadmap", tags=["roadmap"])
 
 
-@router.get("", response_model=list[RoadmapFeatureItem])
+@router.get("", response_model=RoadmapFeatureListResponse)
 def list_features(
     search: str | None = None,
-    status: str | None = None,
-    priority: str | None = None,
+    status: RoadmapStatus | None = None,
+    priority: RoadmapPriority | None = None,
     product_area: str | None = None,
+    skip: int = Query(default=0, ge=0),
+    take: int = Query(default=10, ge=1, le=100),
     db: Session = Depends(get_db),
-) -> list[RoadmapFeatureItem]:
-    return roadmap_repository.list_features(db, search, status, priority, product_area)
+) -> RoadmapFeatureListResponse:
+    items, total = roadmap_repository.list_features(
+        db, search, status, priority, product_area, skip, take
+    )
+
+    return RoadmapFeatureListResponse(**paginate(items, total, skip, take))
 
 
 @router.post("", response_model=RoadmapFeatureItem, status_code=201)

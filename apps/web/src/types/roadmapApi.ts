@@ -19,8 +19,17 @@ type RoadmapFeatureCreateApiPayload = Omit<RoadmapFeatureApiItem, "id">;
 
 type RoadmapFeatureUpdateApiPayload = Partial<RoadmapFeatureCreateApiPayload>;
 
+type RoadmapFeatureListApiResponse = {
+  items: RoadmapFeatureApiItem[];
+  total: number;
+  page: number;
+  page_size: number;
+  total_pages: number;
+};
+
 export type {
   RoadmapFeatureApiItem,
   RoadmapFeatureCreateApiPayload,
   RoadmapFeatureUpdateApiPayload,
+  RoadmapFeatureListApiResponse,
 };

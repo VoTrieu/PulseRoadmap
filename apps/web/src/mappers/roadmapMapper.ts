@@ -2,12 +2,14 @@ import type {
   RoadmapFeatureApiItem,
   RoadmapFeatureCreateApiPayload,
   RoadmapFeatureUpdateApiPayload,
+  RoadmapFeatureListApiResponse,
 } from "../types/roadmapApi";
 
 import type {
   RoadmapFeature,
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
+  RoadmapFeatureListResponse,
 } from "../types/roadmap";
 
 function mapRoadmapFeatureApiItemToRoadmapFeature(
@@ -76,9 +78,22 @@ function mapRoadmapFeatureUpdateInputToApiPayload(
   return payload;
 }
 
+function mapRoadmapFeatureListApiResponseToListResponse(
+  response: RoadmapFeatureListApiResponse,
+): RoadmapFeatureListResponse {
+  return {
+    items: mapRoadmapApiItemsToRoadmapFeatures(response.items),
+    total: response.total,
+    page: response.page,
+    pageSize: response.page_size,
+    totalPages: response.total_pages,
+  };
+}
+
 export {
   mapRoadmapFeatureApiItemToRoadmapFeature,
   mapRoadmapApiItemsToRoadmapFeatures,
   mapRoadmapFeatureCreateInputToApiPayload,
   mapRoadmapFeatureUpdateInputToApiPayload,
+  mapRoadmapFeatureListApiResponseToListResponse,
 };

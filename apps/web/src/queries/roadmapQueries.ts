@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  PaginationParams,
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
   RoadmapFilters,
@@ -18,10 +19,13 @@ type UpdateRoadmapFeatureVariables = {
   input: RoadmapFeatureUpdateInput;
 };
 
-function useRoadmapFeatureList(filters?: RoadmapFilters) {
+function useRoadmapFeatureList(
+  filters?: RoadmapFilters,
+  pagination?: PaginationParams,
+) {
   return useQuery({
-    queryKey: queryKeys.roadmap.list(filters),
-    queryFn: () => getRoadmapFeatures(filters),
+    queryKey: queryKeys.roadmap.list(filters, pagination),
+    queryFn: () => getRoadmapFeatures(filters, pagination),
   });
 }
 
@@ -55,10 +59,7 @@ function useUpdateRoadmapFeature() {
       updateRoadmapFeature(featureId, input),
     onSuccess: async (_data, { featureId }) => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.roadmap.detail(featureId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.roadmap.list(),
+        queryKey: queryKeys.roadmap.all,
       });
     },
   });
@@ -71,10 +72,7 @@ function useDeleteRoadmapFeature() {
     mutationFn: (featureId: string) => deleteRoadmapFeature(featureId),
     onSuccess: async (_data, featureId) => {
       await queryClient.invalidateQueries({
-        queryKey: queryKeys.roadmap.detail(featureId),
-      });
-      await queryClient.invalidateQueries({
-        queryKey: queryKeys.roadmap.list(),
+        queryKey: queryKeys.roadmap.all,
       });
     },
   });

@@ -16,8 +16,13 @@ const queryKeys = {
   },
   roadmap: {
     all: ["roadmap"] as const,
-    list: (filters?: RoadmapFilters) =>
-      [...queryKeys.roadmap.all, "list", filters ?? {}] as const,
+    list: (filters?: RoadmapFilters, pagination?: PaginationParams) =>
+      [
+        ...queryKeys.roadmap.all,
+        "list",
+        filters ?? {},
+        pagination ?? {},
+      ] as const,
     detail: (featureId: string) =>
       [...queryKeys.roadmap.all, "detail", featureId] as const,
   },

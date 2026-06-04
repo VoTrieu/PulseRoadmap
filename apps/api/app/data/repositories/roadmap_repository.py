@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import or_, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.data.models.roadmap import RoadMapFeature
@@ -13,7 +13,9 @@ def list_features(
     status: str | None = None,
     priority: str | None = None,
     product_area: str | None = None,
-) -> list[RoadMapFeature]:
+    skip: int = 0,
+    take: int = 10,
+) -> tuple[list[RoadMapFeature], int]:
     statement = select(RoadMapFeature)
     search_value = search.strip() if search else None
 
@@ -37,12 +39,19 @@ def list_features(
     if product_area:
         statement = statement.where(RoadMapFeature.product_area == product_area)
 
-    statement = statement.order_by(
-        RoadMapFeature.created_at.desc(),
-        RoadMapFeature.id.desc(),
+    count_stmt = select(func.count()).select_from(statement.subquery())
+    total_count = db.scalar(count_stmt) or 0
+
+    data_stmt = (
+        statement.order_by(
+            RoadMapFeature.created_at.desc(),
+            RoadMapFeature.id.desc(),
+        )
+        .offset(skip)
+        .limit(take)
     )
 
-    return list(db.scalars(statement))
+    return list(db.scalars(data_stmt)), total_count
 
 
 def get_feature_by_id(db: Session, feature_id: str) -> RoadMapFeature | None:

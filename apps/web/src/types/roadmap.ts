@@ -1,3 +1,5 @@
+import type { PaginatedResponse, PaginationParams } from "./pagination";
+
 type RoadmapStatus = "Discovery" | "Planned" | "In progress" | "Shipped";
 
 type RoadmapPriority = "High" | "Medium" | "Low";
@@ -35,6 +37,8 @@ type RoadmapFilters = {
   status?: RoadmapStatus;
 };
 
+type RoadmapFeatureListResponse = PaginatedResponse<RoadmapFeature>;
+
 export type {
   RoadmapFeature,
   RoadmapPriority,
@@ -43,4 +47,6 @@ export type {
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
   RoadmapFilters,
+  RoadmapFeatureListResponse,
+  PaginationParams,
 };

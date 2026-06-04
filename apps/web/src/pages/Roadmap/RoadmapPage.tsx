@@ -17,6 +17,7 @@ import { LoadingState } from "../../components/ui/LoadingState";
 import { ErrorState } from "../../components/ui/ErrorState";
 import { RoadmapFeatureFormDialog } from "../../components/roadmap/RoadmapFeatureFormDialog";
 import type {
+  PaginationParams,
   RoadmapFeature,
   RoadmapFeatureCreateInput,
   RoadmapFilters as RoadmapFiltersValue,
@@ -28,17 +29,22 @@ import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 function RoadmapPage() {
   const { t } = useTranslation();
   const [filters, setFilters] = useState<RoadmapFiltersValue>({ search: "" });
+  const [pagination, setPagination] = useState({ skip: 0, take: 10 });
   const debouncedSearch = useDebouncedValue(filters.search);
   const queryFilters = useMemo(
     () => ({ ...filters, search: debouncedSearch }),
     [debouncedSearch, filters],
   );
   const {
-    data: roadmapFeatures = [],
+    data: roadmapResponse,
     isError,
     isLoading,
+    isFetching,
     refetch,
-  } = useRoadmapFeatureList(queryFilters);
+  } = useRoadmapFeatureList(queryFilters, pagination);
+
+  const roadmapFeatures = roadmapResponse?.items ?? [];
+  const totalRecords = roadmapResponse?.total ?? 0;
   const { confirm } = useAppConfirm();
 
   const [isCreateDialogVisible, setIsCreateDialogVisible] = useState(false);
@@ -75,6 +81,15 @@ function RoadmapPage() {
     });
   }
 
+  function handlePageChange(newPagination: PaginationParams) {
+    setPagination(newPagination);
+  }
+
+  function handleFiltersChange(nextFilters: RoadmapFiltersValue) {
+    setFilters(nextFilters);
+    setPagination((current) => ({ ...current, skip: 0 }));
+  }
+
   return (
     <>
       <PageHeader
@@ -86,7 +101,7 @@ function RoadmapPage() {
       />
       <RoadmapSummaryGrid summaries={roadmapSummaries} />
 
-      <RoadmapFilters value={filters} onChange={setFilters} />
+      <RoadmapFilters value={filters} onChange={handleFiltersChange} />
 
       {isLoading ? (
         <LoadingState message={t("roadmap.loading")} />
@@ -100,9 +115,13 @@ function RoadmapPage() {
         <RoadmapBoard
           emptyMessage={t("roadmap.empty")}
           features={roadmapFeatures}
-          statuses={roadmapStatuses}
-          onEditFeature={setEditingFeature}
           onDeleteFeature={handleDeleteRoadmapFeature}
+          onEditFeature={setEditingFeature}
+          onPageChange={handlePageChange}
+          rows={pagination.take}
+          first={pagination.skip}
+          statuses={roadmapStatuses}
+          totalRecords={totalRecords}
         />
       )}
 
