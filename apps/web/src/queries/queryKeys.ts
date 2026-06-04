@@ -1,4 +1,5 @@
 import type { FeedbackListFilters, PaginationParams } from "../types/feedback";
+import { RoadmapFilters } from "../types/roadmap";
 
 const queryKeys = {
   feedback: {
@@ -15,7 +16,8 @@ const queryKeys = {
   },
   roadmap: {
     all: ["roadmap"] as const,
-    list: () => [...queryKeys.roadmap.all, "list"] as const,
+    list: (filters?: RoadmapFilters) =>
+      [...queryKeys.roadmap.all, "list", filters ?? {}] as const,
     detail: (featureId: string) =>
       [...queryKeys.roadmap.all, "detail", featureId] as const,
   },

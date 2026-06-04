@@ -7,12 +7,17 @@ import type {
   RoadmapFeature,
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
+  RoadmapFilters,
 } from "../types/roadmap";
 import type { RoadmapFeatureApiItem } from "../types/roadmapApi";
 import { apiClient } from "./apiClient";
 
-async function getRoadmapFeatures(): Promise<RoadmapFeature[]> {
-  const response = await apiClient.get<RoadmapFeatureApiItem[]>("/roadmap");
+async function getRoadmapFeatures(
+  filters?: RoadmapFilters,
+): Promise<RoadmapFeature[]> {
+  const response = await apiClient.get<RoadmapFeatureApiItem[]>("/roadmap", {
+    params: toRoadmapFeatureQueryParams(filters),
+  });
 
   return mapRoadmapApiItemsToRoadmapFeatures(response.data);
 }
@@ -50,6 +55,15 @@ async function updateRoadmapFeature(
 
 async function deleteRoadmapFeature(roadmapFeatureId: string): Promise<void> {
   await apiClient.delete(`/roadmap/${roadmapFeatureId}`);
+}
+
+function toRoadmapFeatureQueryParams(filters?: RoadmapFilters) {
+  return {
+    search: filters?.search.trim() || undefined,
+    status: filters?.status || undefined,
+    priority: filters?.priority || undefined,
+    product_area: filters?.productArea || undefined,
+  };
 }
 
 export {

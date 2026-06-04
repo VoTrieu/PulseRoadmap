@@ -23,16 +23,22 @@ import type {
 } from "../../types/roadmap";
 import { useAppConfirm } from "../../hooks/useAppConfirm";
 import { RoadmapFilters } from "../../components/roadmap/RoadmapFilters";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 function RoadmapPage() {
   const { t } = useTranslation();
   const [filters, setFilters] = useState<RoadmapFiltersValue>({ search: "" });
+  const debouncedSearch = useDebouncedValue(filters.search);
+  const queryFilters = useMemo(
+    () => ({ ...filters, search: debouncedSearch }),
+    [debouncedSearch, filters],
+  );
   const {
     data: roadmapFeatures = [],
     isError,
     isLoading,
     refetch,
-  } = useRoadmapFeatureList();
+  } = useRoadmapFeatureList(queryFilters);
   const { confirm } = useAppConfirm();
 
   const [isCreateDialogVisible, setIsCreateDialogVisible] = useState(false);
@@ -42,29 +48,6 @@ function RoadmapPage() {
   const createRoadmapFeatureMutation = useCreateRoadmapFeature();
   const updateRoadmapFeatureMutation = useUpdateRoadmapFeature();
   const deleteRoadmapFeatureMutation = useDeleteRoadmapFeature();
-
-  const filteredRoadmapFeatures = useMemo(() => {
-    const search = filters.search.toLowerCase();
-
-    return roadmapFeatures.filter((feature) => {
-      const matchesSearch =
-        !search ||
-        feature.title.toLowerCase().includes(search) ||
-        feature.owner.toLowerCase().includes(search) ||
-        feature.milestone.toLowerCase().includes(search);
-
-      const matchesStatus =
-        !filters.status || feature.status === filters.status;
-      const matchesPriority =
-        !filters.priority || feature.priority === filters.priority;
-      const matchesProductArea =
-        !filters.productArea || feature.productArea === filters.productArea;
-
-      return (
-        matchesSearch && matchesStatus && matchesPriority && matchesProductArea
-      );
-    });
-  }, [filters, roadmapFeatures]);
 
   function handleCreateRoadmapFeature(input: RoadmapFeatureCreateInput) {
     createRoadmapFeatureMutation.mutate(input, {
@@ -116,7 +99,7 @@ function RoadmapPage() {
       ) : (
         <RoadmapBoard
           emptyMessage={t("roadmap.empty")}
-          features={filteredRoadmapFeatures}
+          features={roadmapFeatures}
           statuses={roadmapStatuses}
           onEditFeature={setEditingFeature}
           onDeleteFeature={handleDeleteRoadmapFeature}

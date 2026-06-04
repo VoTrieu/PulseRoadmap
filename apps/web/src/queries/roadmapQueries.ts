@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
+  RoadmapFilters,
 } from "../types/roadmap";
 import { queryKeys } from "./queryKeys";
 import {
@@ -17,10 +18,10 @@ type UpdateRoadmapFeatureVariables = {
   input: RoadmapFeatureUpdateInput;
 };
 
-function useRoadmapFeatureList() {
+function useRoadmapFeatureList(filters?: RoadmapFilters) {
   return useQuery({
-    queryKey: queryKeys.roadmap.list(),
-    queryFn: getRoadmapFeatures,
+    queryKey: queryKeys.roadmap.list(filters),
+    queryFn: () => getRoadmapFeatures(filters),
   });
 }
 

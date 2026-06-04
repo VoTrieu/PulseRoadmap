@@ -1,7 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 
-from app.schemas.roadmap import RoadmapFeatureCreate, RoadmapFeatureItem, RoadmapFeatureUpdate
+from app.schemas.roadmap import (
+    RoadmapFeatureCreate,
+    RoadmapFeatureItem,
+    RoadmapFeatureUpdate,
+)
 from app.data.db.session import get_db
 from app.data.repositories import roadmap_repository
 
@@ -10,12 +14,18 @@ router = APIRouter(prefix="/roadmap", tags=["roadmap"])
 
 
 @router.get("", response_model=list[RoadmapFeatureItem])
-def list_feedback(db: Session = Depends(get_db)) -> list[RoadmapFeatureItem]:
-    return roadmap_repository.list_features(db)
+def list_features(
+    search: str | None = None,
+    status: str | None = None,
+    priority: str | None = None,
+    product_area: str | None = None,
+    db: Session = Depends(get_db),
+) -> list[RoadmapFeatureItem]:
+    return roadmap_repository.list_features(db, search, status, priority, product_area)
 
 
 @router.post("", response_model=RoadmapFeatureItem, status_code=201)
-def create_feedback(
+def create_feature(
     payload: RoadmapFeatureCreate, db: Session = Depends(get_db)
 ) -> RoadmapFeatureItem:
     return roadmap_repository.create_feature(db, payload)
