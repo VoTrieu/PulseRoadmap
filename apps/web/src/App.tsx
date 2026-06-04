@@ -4,6 +4,7 @@ import { DashboardPage } from "./pages/Dashboard/DashboardPage";
 import { FeedbackPage } from "./pages/Feedback/FeedbackPage";
 import { FeedbackDetailPage } from "./pages/Feedback/FeedbackDetailPage";
 import { RoadmapPage } from "./pages/Roadmap/RoadmapPage";
+import { BugsPage } from "./pages/Bugs/BugsPage";
 import { appRoutes } from "./routes";
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path={appRoutes.feedback} element={<FeedbackPage />} />
           <Route path="/feedback/:feedbackId" element={<FeedbackDetailPage />} />
           <Route path={appRoutes.roadmap} element={<RoadmapPage />} />
+          <Route path={appRoutes.bugs} element={<BugsPage />} />
           <Route path="*" element={<Navigate replace to={appRoutes.dashboard} />} />
         </Route>
       </Routes>
