@@ -111,6 +111,11 @@ const en = {
 "roadmap.form.strategicValue": "Strategic value",
 "roadmap.delete.header": "Delete feature",
 "roadmap.delete.message": "This roadmap feature will be permanently deleted.",
+"roadmap.filter.allPriorities": "All priorities",
+"roadmap.filter.allProductAreas": "All areas",
+"roadmap.filter.allStatuses": "All statuses",
+"roadmap.filter.clear": "Clear",
+"roadmap.searchPlaceholder": "Search title, owner, milestone...",
 } as const;
 
 type TranslationKey = keyof typeof en;
@@ -230,6 +235,11 @@ const fr = {
 "roadmap.form.strategicValue": "Valeur strategique",
 "roadmap.delete.header": "Supprimer la fonctionnalite",
 "roadmap.delete.message": "Cette fonctionnalite roadmap sera supprimee definitivement.",
+"roadmap.filter.allPriorities": "Toutes les priorites",
+"roadmap.filter.allProductAreas": "Toutes les zones",
+"roadmap.filter.allStatuses": "Tous les statuts",
+"roadmap.filter.clear": "Effacer",
+"roadmap.searchPlaceholder": "Rechercher titre, responsable, jalon...",
 } satisfies Record<TranslationKey, string>;
 
 const resources = {

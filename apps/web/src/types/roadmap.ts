@@ -28,6 +28,13 @@ type RoadmapSummary = {
   icon: string;
 };
 
+type RoadmapFilters = {
+  priority?: RoadmapPriority;
+  productArea?: string;
+  search: string;
+  status?: RoadmapStatus;
+};
+
 export type {
   RoadmapFeature,
   RoadmapPriority,
@@ -35,4 +42,5 @@ export type {
   RoadmapSummary,
   RoadmapFeatureCreateInput,
   RoadmapFeatureUpdateInput,
+  RoadmapFilters,
 };

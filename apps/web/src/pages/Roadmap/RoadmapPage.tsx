@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { RoadmapBoard } from "../../components/roadmap/RoadmapBoard";
 import { RoadmapSummaryGrid } from "../../components/roadmap/RoadmapSummaryGrid";
@@ -19,11 +19,14 @@ import { RoadmapFeatureFormDialog } from "../../components/roadmap/RoadmapFeatur
 import type {
   RoadmapFeature,
   RoadmapFeatureCreateInput,
+  RoadmapFilters as RoadmapFiltersValue,
 } from "../../types/roadmap";
 import { useAppConfirm } from "../../hooks/useAppConfirm";
+import { RoadmapFilters } from "../../components/roadmap/RoadmapFilters";
 
 function RoadmapPage() {
   const { t } = useTranslation();
+  const [filters, setFilters] = useState<RoadmapFiltersValue>({ search: "" });
   const {
     data: roadmapFeatures = [],
     isError,
@@ -39,6 +42,29 @@ function RoadmapPage() {
   const createRoadmapFeatureMutation = useCreateRoadmapFeature();
   const updateRoadmapFeatureMutation = useUpdateRoadmapFeature();
   const deleteRoadmapFeatureMutation = useDeleteRoadmapFeature();
+
+  const filteredRoadmapFeatures = useMemo(() => {
+    const search = filters.search.toLowerCase();
+
+    return roadmapFeatures.filter((feature) => {
+      const matchesSearch =
+        !search ||
+        feature.title.toLowerCase().includes(search) ||
+        feature.owner.toLowerCase().includes(search) ||
+        feature.milestone.toLowerCase().includes(search);
+
+      const matchesStatus =
+        !filters.status || feature.status === filters.status;
+      const matchesPriority =
+        !filters.priority || feature.priority === filters.priority;
+      const matchesProductArea =
+        !filters.productArea || feature.productArea === filters.productArea;
+
+      return (
+        matchesSearch && matchesStatus && matchesPriority && matchesProductArea
+      );
+    });
+  }, [filters, roadmapFeatures]);
 
   function handleCreateRoadmapFeature(input: RoadmapFeatureCreateInput) {
     createRoadmapFeatureMutation.mutate(input, {
@@ -77,6 +103,8 @@ function RoadmapPage() {
       />
       <RoadmapSummaryGrid summaries={roadmapSummaries} />
 
+      <RoadmapFilters value={filters} onChange={setFilters} />
+
       {isLoading ? (
         <LoadingState message={t("roadmap.loading")} />
       ) : isError ? (
@@ -88,7 +116,7 @@ function RoadmapPage() {
       ) : (
         <RoadmapBoard
           emptyMessage={t("roadmap.empty")}
-          features={roadmapFeatures}
+          features={filteredRoadmapFeatures}
           statuses={roadmapStatuses}
           onEditFeature={setEditingFeature}
           onDeleteFeature={handleDeleteRoadmapFeature}
