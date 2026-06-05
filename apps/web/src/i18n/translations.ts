@@ -5,6 +5,7 @@ const en = {
   "nav.roadmap": "Roadmap",
   "nav.bugs": "Bugs",
   "nav.releases": "Releases",
+  "nav.analytics": "Analytics",
   "layout.closeNavigation": "Close navigation",
   "layout.mainNavigation": "Main navigation",
   "layout.toggleNavigation": "Toggle navigation",
@@ -225,6 +226,45 @@ const en = {
   "releases.visibility.internal": "Internal",
   "releases.visibility.label": "Visibility",
   "releases.visibility.public": "Public",
+  "analytics.eyebrow": "Analytics",
+  "analytics.page.subtitle":
+    "Connect feedback, roadmap, bug, and release data into product health signals.",
+  "analytics.page.title": "Product analytics",
+  "analytics.loading": "Loading analytics...",
+  "analytics.listLoadErrorMessage":
+    "Make sure the FastAPI backend is running on port 8000, then try again.",
+  "analytics.listLoadErrorTitle": "Could not load analytics",
+  "analytics.feedbackByArea.subtitle": "Visible request volume by product area",
+  "analytics.feedbackByArea.title": "Feedback by area",
+  "analytics.bugSeverity.subtitle": "Open reports grouped by severity",
+  "analytics.bugSeverity.title": "Bug severity mix",
+  "analytics.roadmapStatus.subtitle": "Feature delivery stages",
+  "analytics.roadmapStatus.title": "Roadmap status",
+  "analytics.releasePipeline.subtitle": "Launch progress by status",
+  "analytics.releasePipeline.title": "Release pipeline",
+  "analytics.insights.subtitle": "Signals generated from current product data",
+  "analytics.insights.title": "Operational insights",
+  "analytics.summary.feedbackHelper": "Customer signals loaded",
+  "analytics.summary.feedbackLabel": "Feedback items",
+  "analytics.summary.roadmapHelper": "Planned feature work",
+  "analytics.summary.roadmapLabel": "Roadmap items",
+  "analytics.summary.bugsHelper": "Not fixed or closed",
+  "analytics.summary.bugsLabel": "Active bugs",
+  "analytics.summary.releasesHelper": "Completed launches",
+  "analytics.summary.releasesLabel": "Shipped releases",
+  "analytics.none": "None",
+  "analytics.insights.feedbackFocusHelper":
+    "Highest-volume customer feedback area in the current dataset.",
+  "analytics.insights.feedbackFocusLabel": "Feedback focus",
+  "analytics.insights.criticalBugHelper":
+    "Critical reports that should stay visible in triage planning.",
+  "analytics.insights.criticalBugLabel": "Critical bugs",
+  "analytics.insights.executionHelper":
+    "Roadmap features currently moving through delivery.",
+  "analytics.insights.executionLabel": "Execution load",
+  "analytics.insights.changelogHelper":
+    "Releases currently marked for public changelog visibility.",
+  "analytics.insights.changelogLabel": "Public changelogs",
 } as const;
 
 type TranslationKey = keyof typeof en;
@@ -236,6 +276,7 @@ const fr = {
   "nav.roadmap": "Roadmap",
   "nav.bugs": "Bugs",
   "nav.releases": "Versions",
+  "nav.analytics": "Analytiques",
   "layout.closeNavigation": "Fermer la navigation",
   "layout.mainNavigation": "Navigation principale",
   "layout.toggleNavigation": "Afficher la navigation",
@@ -458,6 +499,45 @@ const fr = {
   "releases.visibility.internal": "Interne",
   "releases.visibility.label": "Visibilite",
   "releases.visibility.public": "Public",
+  "analytics.eyebrow": "Analytiques",
+  "analytics.page.subtitle":
+    "Reliez les retours, la roadmap, les bugs et les versions en signaux de sante produit.",
+  "analytics.page.title": "Analytiques produit",
+  "analytics.loading": "Chargement des analytiques...",
+  "analytics.listLoadErrorMessage":
+    "Verifiez que le backend FastAPI fonctionne sur le port 8000, puis reessayez.",
+  "analytics.listLoadErrorTitle": "Impossible de charger les analytiques",
+  "analytics.feedbackByArea.subtitle": "Volume visible de demandes par zone produit",
+  "analytics.feedbackByArea.title": "Retours par zone",
+  "analytics.bugSeverity.subtitle": "Rapports ouverts groupes par severite",
+  "analytics.bugSeverity.title": "Repartition des severites",
+  "analytics.roadmapStatus.subtitle": "Etapes de livraison des fonctionnalites",
+  "analytics.roadmapStatus.title": "Statut roadmap",
+  "analytics.releasePipeline.subtitle": "Avancement des lancements par statut",
+  "analytics.releasePipeline.title": "Pipeline de versions",
+  "analytics.insights.subtitle": "Signaux generes depuis les donnees produit actuelles",
+  "analytics.insights.title": "Insights operationnels",
+  "analytics.summary.feedbackHelper": "Signaux clients charges",
+  "analytics.summary.feedbackLabel": "Retours",
+  "analytics.summary.roadmapHelper": "Travail fonctionnalite planifie",
+  "analytics.summary.roadmapLabel": "Elements roadmap",
+  "analytics.summary.bugsHelper": "Non corriges ou fermes",
+  "analytics.summary.bugsLabel": "Bugs actifs",
+  "analytics.summary.releasesHelper": "Lancements termines",
+  "analytics.summary.releasesLabel": "Versions livrees",
+  "analytics.none": "Aucun",
+  "analytics.insights.feedbackFocusHelper":
+    "Zone produit avec le plus grand volume de retours dans les donnees actuelles.",
+  "analytics.insights.feedbackFocusLabel": "Focus retours",
+  "analytics.insights.criticalBugHelper":
+    "Rapports critiques a garder visibles dans la planification du triage.",
+  "analytics.insights.criticalBugLabel": "Bugs critiques",
+  "analytics.insights.executionHelper":
+    "Fonctionnalites roadmap actuellement en cours de livraison.",
+  "analytics.insights.executionLabel": "Charge d'execution",
+  "analytics.insights.changelogHelper":
+    "Versions actuellement marquees comme visibles dans le changelog public.",
+  "analytics.insights.changelogLabel": "Changelogs publics",
 } satisfies Record<TranslationKey, string>;
 
 const resources = {

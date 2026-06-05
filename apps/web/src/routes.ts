@@ -6,6 +6,7 @@ const appRoutes = {
   roadmap: "/roadmap",
   bugs: "/bugs",
   releases: "/releases",
+  analytics: "/analytics",
 } as const;
 
 const navItems: NavItem[] = [
@@ -38,6 +39,12 @@ const navItems: NavItem[] = [
     path: appRoutes.releases,
     labelKey: "nav.releases",
     icon: "pi pi-send",
+  },
+  {
+    id: "analytics",
+    path: appRoutes.analytics,
+    labelKey: "nav.analytics",
+    icon: "pi pi-chart-line",
   },
 ];
 
