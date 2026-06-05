@@ -1,7 +1,7 @@
 import type { FeedbackListFilters, PaginationParams } from "../types/feedback";
 import type { BugFilters } from "../types/bug";
-import { RoadmapFilters } from "../types/roadmap";
-import { ReleaseFilters } from "../types/release";
+import type { RoadmapFilters } from "../types/roadmap";
+import type { ReleaseFilters } from "../types/release";
 
 const queryKeys = {
   feedback: {

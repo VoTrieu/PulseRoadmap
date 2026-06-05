@@ -1,11 +1,10 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from platform import release  
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import bugs, feedback, health, roadmap
+from app.api.routes import bugs, feedback, health, release, roadmap
 from app.core.config import settings
 from app.data.db.init_db import init_db
 
