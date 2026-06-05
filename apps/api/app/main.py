@@ -1,5 +1,6 @@
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager  
+from contextlib import asynccontextmanager
+from platform import release  
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -32,6 +33,7 @@ def create_app() -> FastAPI:
     app.include_router(feedback.router, prefix="/api")
     app.include_router(roadmap.router, prefix="/api")
     app.include_router(bugs.router, prefix="/api")
+    app.include_router(release.router, prefix="/api")
 
     return app
 
