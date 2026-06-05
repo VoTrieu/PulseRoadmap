@@ -1,6 +1,7 @@
 import type { FeedbackListFilters, PaginationParams } from "../types/feedback";
 import type { BugFilters } from "../types/bug";
 import { RoadmapFilters } from "../types/roadmap";
+import { ReleaseFilters } from "../types/release";
 
 const queryKeys = {
   feedback: {
@@ -30,14 +31,21 @@ const queryKeys = {
   bugs: {
     all: ["bugs"] as const,
     list: (filters?: BugFilters, pagination?: PaginationParams) =>
+      [...queryKeys.bugs.all, "list", filters ?? {}, pagination ?? {}] as const,
+    detail: (bugId: string) =>
+      [...queryKeys.bugs.all, "detail", bugId] as const,
+  },
+  releases: {
+    all: ["releases"] as const,
+    list: (filters?: ReleaseFilters, pagination?: PaginationParams) =>
       [
-        ...queryKeys.bugs.all,
+        ...queryKeys.releases.all,
         "list",
         filters ?? {},
         pagination ?? {},
       ] as const,
-    detail: (bugId: string) =>
-      [...queryKeys.bugs.all, "detail", bugId] as const,
+    detail: (releaseId: string) =>
+      [...queryKeys.releases.all, "detail", releaseId] as const,
   },
 };
 
