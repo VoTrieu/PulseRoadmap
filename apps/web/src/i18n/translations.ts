@@ -6,6 +6,7 @@ const en = {
   "nav.bugs": "Bugs",
   "nav.releases": "Releases",
   "nav.analytics": "Analytics",
+  "nav.aiAssistant": "AI Assistant",
   "layout.closeNavigation": "Close navigation",
   "layout.mainNavigation": "Main navigation",
   "layout.toggleNavigation": "Toggle navigation",
@@ -265,6 +266,63 @@ const en = {
   "analytics.insights.changelogHelper":
     "Releases currently marked for public changelog visibility.",
   "analytics.insights.changelogLabel": "Public changelogs",
+  "aiAssistant.eyebrow": "AI Assistant",
+  "aiAssistant.page.subtitle":
+    "Draft product briefs from feedback, roadmap, bugs, and release context.",
+  "aiAssistant.page.title": "AI-assisted product workspace",
+  "aiAssistant.loading": "Loading product context...",
+  "aiAssistant.listLoadErrorMessage":
+    "Make sure the FastAPI backend is running on port 8000, then try again.",
+  "aiAssistant.listLoadErrorTitle": "Could not load product context",
+  "aiAssistant.defaultPrompt":
+    "Create a product brief for leadership using the most important customer signals, delivery work, release status, and product risks.",
+  "aiAssistant.generate": "Generate brief",
+  "aiAssistant.promptPlaceholder": "Ask for a release note, feature brief, risk summary, or roadmap update...",
+  "aiAssistant.prompt.title": "Prompt",
+  "aiAssistant.presets.executive.description": "Summarize priority signals for leadership review.",
+  "aiAssistant.presets.executive.label": "Executive brief",
+  "aiAssistant.presets.executive.prompt":
+    "Create an executive brief that summarizes customer demand, roadmap progress, release status, and the biggest delivery risks.",
+  "aiAssistant.presets.release.description": "Prepare customer-facing launch messaging.",
+  "aiAssistant.presets.release.label": "Release notes",
+  "aiAssistant.presets.release.prompt":
+    "Draft release notes from current shipped and planned release context, including customer value and important fixes.",
+  "aiAssistant.presets.risk.description": "Identify bugs and roadmap risks that need attention.",
+  "aiAssistant.presets.risk.label": "Risk summary",
+  "aiAssistant.presets.risk.prompt":
+    "Create a risk summary using critical bugs, high-priority roadmap items, and urgent customer feedback.",
+  "aiAssistant.brief.defaultTitle": "Draft brief",
+  "aiAssistant.brief.empty": "Generate a brief to preview AI-assisted output here.",
+  "aiAssistant.brief.generatedTitle": "Generated product brief",
+  "aiAssistant.brief.subtitle": "Local draft generated from the current product dataset",
+  "aiAssistant.brief.title": "Brief preview",
+  "aiAssistant.brief.sections.request": "Request",
+  "aiAssistant.brief.sections.customerSignals": "Customer signals",
+  "aiAssistant.brief.sections.deliveryPlan": "Delivery plan",
+  "aiAssistant.brief.sections.risks": "Risks",
+  "aiAssistant.brief.customerSignalsBody":
+    "There are {{count}} feedback items in context. The strongest visible product area is {{area}}, so prioritization should start there.",
+  "aiAssistant.brief.deliveryPlanBody":
+    "The leading roadmap item is {{feature}}. Connect it to {{release}} so the team can align scope, QA, and changelog timing.",
+  "aiAssistant.brief.risksBody":
+    "There are {{count}} critical bugs in context. Keep these visible before committing launch dates or public messaging.",
+  "aiAssistant.context.bugs": "Bug reports",
+  "aiAssistant.context.feedback": "Feedback items",
+  "aiAssistant.context.nextRelease": "Next release",
+  "aiAssistant.context.releases": "Releases",
+  "aiAssistant.context.roadmap": "Roadmap items",
+  "aiAssistant.context.subtitle": "Data available to the assistant",
+  "aiAssistant.context.title": "Product context",
+  "aiAssistant.context.topFeedbackArea": "Top feedback area",
+  "aiAssistant.none": "None",
+  "aiAssistant.summary.bugsHelper": "Need risk review",
+  "aiAssistant.summary.bugsLabel": "Critical bugs",
+  "aiAssistant.summary.feedbackHelper": "Urgent customer signals",
+  "aiAssistant.summary.feedbackLabel": "High urgency",
+  "aiAssistant.summary.releasesHelper": "Visible to customers",
+  "aiAssistant.summary.releasesLabel": "Public releases",
+  "aiAssistant.summary.roadmapHelper": "Priority delivery work",
+  "aiAssistant.summary.roadmapLabel": "High priority",
 } as const;
 
 type TranslationKey = keyof typeof en;
@@ -277,6 +335,7 @@ const fr = {
   "nav.bugs": "Bugs",
   "nav.releases": "Versions",
   "nav.analytics": "Analytiques",
+  "nav.aiAssistant": "Assistant IA",
   "layout.closeNavigation": "Fermer la navigation",
   "layout.mainNavigation": "Navigation principale",
   "layout.toggleNavigation": "Afficher la navigation",
@@ -538,6 +597,63 @@ const fr = {
   "analytics.insights.changelogHelper":
     "Versions actuellement marquees comme visibles dans le changelog public.",
   "analytics.insights.changelogLabel": "Changelogs publics",
+  "aiAssistant.eyebrow": "Assistant IA",
+  "aiAssistant.page.subtitle":
+    "Redigez des briefs produit a partir des retours, de la roadmap, des bugs et des versions.",
+  "aiAssistant.page.title": "Espace produit assiste par IA",
+  "aiAssistant.loading": "Chargement du contexte produit...",
+  "aiAssistant.listLoadErrorMessage":
+    "Verifiez que le backend FastAPI fonctionne sur le port 8000, puis reessayez.",
+  "aiAssistant.listLoadErrorTitle": "Impossible de charger le contexte produit",
+  "aiAssistant.defaultPrompt":
+    "Creez un brief produit pour la direction avec les signaux clients importants, le travail de livraison, le statut des versions et les risques produit.",
+  "aiAssistant.generate": "Generer le brief",
+  "aiAssistant.promptPlaceholder": "Demandez une note de version, un brief fonctionnalite, un resume des risques ou une mise a jour roadmap...",
+  "aiAssistant.prompt.title": "Prompt",
+  "aiAssistant.presets.executive.description": "Resumez les signaux prioritaires pour la direction.",
+  "aiAssistant.presets.executive.label": "Brief executif",
+  "aiAssistant.presets.executive.prompt":
+    "Creez un brief executif qui resume la demande client, l'avancement roadmap, le statut des versions et les plus grands risques de livraison.",
+  "aiAssistant.presets.release.description": "Preparez un message de lancement visible par les clients.",
+  "aiAssistant.presets.release.label": "Notes de version",
+  "aiAssistant.presets.release.prompt":
+    "Redigez des notes de version depuis le contexte des versions livrees et planifiees, avec la valeur client et les correctifs importants.",
+  "aiAssistant.presets.risk.description": "Identifiez les bugs et risques roadmap a traiter.",
+  "aiAssistant.presets.risk.label": "Resume des risques",
+  "aiAssistant.presets.risk.prompt":
+    "Creez un resume des risques avec les bugs critiques, les elements roadmap prioritaires et les retours clients urgents.",
+  "aiAssistant.brief.defaultTitle": "Brief brouillon",
+  "aiAssistant.brief.empty": "Generez un brief pour afficher ici la sortie assistee par IA.",
+  "aiAssistant.brief.generatedTitle": "Brief produit genere",
+  "aiAssistant.brief.subtitle": "Brouillon local genere depuis les donnees produit actuelles",
+  "aiAssistant.brief.title": "Apercu du brief",
+  "aiAssistant.brief.sections.request": "Demande",
+  "aiAssistant.brief.sections.customerSignals": "Signaux clients",
+  "aiAssistant.brief.sections.deliveryPlan": "Plan de livraison",
+  "aiAssistant.brief.sections.risks": "Risques",
+  "aiAssistant.brief.customerSignalsBody":
+    "Il y a {{count}} retours dans le contexte. La zone produit la plus visible est {{area}}, donc la priorisation devrait commencer la.",
+  "aiAssistant.brief.deliveryPlanBody":
+    "L'element roadmap principal est {{feature}}. Reliez-le a {{release}} pour aligner le scope, la QA et le calendrier du changelog.",
+  "aiAssistant.brief.risksBody":
+    "Il y a {{count}} bugs critiques dans le contexte. Gardez-les visibles avant de confirmer les dates de lancement ou les messages publics.",
+  "aiAssistant.context.bugs": "Rapports de bugs",
+  "aiAssistant.context.feedback": "Retours",
+  "aiAssistant.context.nextRelease": "Prochaine version",
+  "aiAssistant.context.releases": "Versions",
+  "aiAssistant.context.roadmap": "Elements roadmap",
+  "aiAssistant.context.subtitle": "Donnees disponibles pour l'assistant",
+  "aiAssistant.context.title": "Contexte produit",
+  "aiAssistant.context.topFeedbackArea": "Zone de retours principale",
+  "aiAssistant.none": "Aucun",
+  "aiAssistant.summary.bugsHelper": "Revue des risques requise",
+  "aiAssistant.summary.bugsLabel": "Bugs critiques",
+  "aiAssistant.summary.feedbackHelper": "Signaux clients urgents",
+  "aiAssistant.summary.feedbackLabel": "Urgence haute",
+  "aiAssistant.summary.releasesHelper": "Visible par les clients",
+  "aiAssistant.summary.releasesLabel": "Versions publiques",
+  "aiAssistant.summary.roadmapHelper": "Travail de livraison prioritaire",
+  "aiAssistant.summary.roadmapLabel": "Priorite haute",
 } satisfies Record<TranslationKey, string>;
 
 const resources = {

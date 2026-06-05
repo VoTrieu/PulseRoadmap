@@ -7,6 +7,7 @@ const appRoutes = {
   bugs: "/bugs",
   releases: "/releases",
   analytics: "/analytics",
+  aiAssistant: "/ai-assistant",
 } as const;
 
 const navItems: NavItem[] = [
@@ -45,6 +46,12 @@ const navItems: NavItem[] = [
     path: appRoutes.analytics,
     labelKey: "nav.analytics",
     icon: "pi pi-chart-line",
+  },
+  {
+    id: "aiAssistant",
+    path: appRoutes.aiAssistant,
+    labelKey: "nav.aiAssistant",
+    icon: "pi pi-sparkles",
   },
 ];
 

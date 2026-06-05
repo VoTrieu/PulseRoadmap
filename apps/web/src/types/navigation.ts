@@ -6,7 +6,8 @@ type AppPage =
   | "roadmap"
   | "bugs"
   | "releases"
-  | "analytics";
+  | "analytics"
+  | "aiAssistant";
 
 type NavItem = {
   id: AppPage;
