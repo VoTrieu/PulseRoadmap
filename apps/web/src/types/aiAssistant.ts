@@ -19,6 +19,32 @@ type AiBriefRequest = {
   prompt: string;
 };
 
+type AiAssistantContext = {
+  totalFeedback: number;
+  totalRoadmap: number;
+  totalBugs: number;
+  totalReleases: number;
+  highUrgencyFeedback: number;
+  highPriorityRoadmap: number;
+  criticalBugs: number;
+  publicReleases: number;
+  topFeedbackArea: string | null;
+  nextRelease: string | null;
+};
+
+type AiAssistantContextApiResponse = {
+  total_feedback: number;
+  total_roadmap: number;
+  total_bugs: number;
+  total_releases: number;
+  high_urgency_feedback: number;
+  high_priority_roadmap: number;
+  critical_bugs: number;
+  public_releases: number;
+  top_feedback_area: string | null;
+  next_release: string | null;
+};
+
 type AiPromptPreset = {
   description: string;
   icon: string;
@@ -33,6 +59,8 @@ type AiContextItem = {
 
 export type {
   AiAssistantMetric,
+  AiAssistantContext,
+  AiAssistantContextApiResponse,
   AiBrief,
   AiBriefRequest,
   AiBriefSection,

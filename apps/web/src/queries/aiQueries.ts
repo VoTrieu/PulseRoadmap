@@ -1,6 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
-import { generateAiBrief } from "../services/aiApi";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { generateAiBrief, getAiAssistantContext } from "../services/aiApi";
 import type { AiBriefRequest } from "../types/aiAssistant";
+import { queryKeys } from "./queryKeys";
+
+function useAiAssistantContext() {
+  return useQuery({
+    queryKey: queryKeys.ai.context(),
+    queryFn: getAiAssistantContext,
+  });
+}
 
 function useGenerateAiBrief() {
   return useMutation({
@@ -8,4 +16,4 @@ function useGenerateAiBrief() {
   });
 }
 
-export { useGenerateAiBrief };
+export { useAiAssistantContext, useGenerateAiBrief };

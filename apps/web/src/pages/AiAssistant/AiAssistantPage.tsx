@@ -8,24 +8,18 @@ import { ErrorState } from "../../components/ui/ErrorState";
 import { LoadingState } from "../../components/ui/LoadingState";
 import { PageHeader } from "../../components/ui/PageHeader";
 import type { TranslationKey } from "../../i18n/translations";
-import { useBugList } from "../../queries/bugQueries";
-import { useFeedbackList } from "../../queries/feedbackQueries";
-import { useReleaseList } from "../../queries/releaseQueries";
-import { useRoadmapFeatureList } from "../../queries/roadmapQueries";
-import { useGenerateAiBrief } from "../../queries/aiQueries";
+import {
+  useAiAssistantContext,
+  useGenerateAiBrief,
+} from "../../queries/aiQueries";
 import type {
+  AiAssistantContext,
   AiAssistantMetric,
   AiBrief,
   AiContextItem,
   AiLocale,
   AiPromptPreset,
 } from "../../types/aiAssistant";
-import type { BugReport } from "../../types/bug";
-import type { FeedbackInboxItem } from "../../types/feedback";
-import type { Release } from "../../types/release";
-import type { RoadmapFeature } from "../../types/roadmap";
-
-const AI_CONTEXT_PAGE_SIZE = 100;
 
 function AiAssistantPage() {
   const { i18n, t } = useTranslation();
@@ -35,52 +29,21 @@ function AiAssistantPage() {
     title: t("aiAssistant.brief.defaultTitle"),
   });
   const generateBriefMutation = useGenerateAiBrief();
-  const feedbackQuery = useFeedbackList(
-    { search: "" },
-    { skip: 0, take: AI_CONTEXT_PAGE_SIZE },
-  );
-  const roadmapQuery = useRoadmapFeatureList(
-    { search: "" },
-    { skip: 0, take: AI_CONTEXT_PAGE_SIZE },
-  );
-  const bugQuery = useBugList(
-    { search: "" },
-    { skip: 0, take: AI_CONTEXT_PAGE_SIZE },
-  );
-  const releaseQuery = useReleaseList(
-    { search: "" },
-    { skip: 0, take: AI_CONTEXT_PAGE_SIZE },
-  );
-  const isLoading =
-    feedbackQuery.isLoading ||
-    roadmapQuery.isLoading ||
-    bugQuery.isLoading ||
-    releaseQuery.isLoading;
-  const isError =
-    feedbackQuery.isError ||
-    roadmapQuery.isError ||
-    bugQuery.isError ||
-    releaseQuery.isError;
-  const feedback = feedbackQuery.data?.items ?? [];
-  const roadmap = roadmapQuery.data?.items ?? [];
-  const bugs = bugQuery.data?.items ?? [];
-  const releases = releaseQuery.data?.items ?? [];
+  const contextQuery = useAiAssistantContext();
+  const context = contextQuery.data;
   const translate = (key: TranslationKey) => t(key);
   const summaries = useMemo(
-    () => buildAiSummaries(feedback, roadmap, bugs, releases, translate),
-    [bugs, feedback, releases, roadmap, translate],
+    () => (context ? buildAiSummaries(context, translate) : []),
+    [context, translate],
   );
   const contextItems = useMemo(
-    () => buildContextItems(feedback, roadmap, bugs, releases, translate),
-    [bugs, feedback, releases, roadmap, translate],
+    () => (context ? buildContextItems(context, translate) : []),
+    [context, translate],
   );
   const presets = useMemo(() => buildPromptPresets(translate), [translate]);
 
   function retryAll() {
-    void feedbackQuery.refetch();
-    void roadmapQuery.refetch();
-    void bugQuery.refetch();
-    void releaseQuery.refetch();
+    void contextQuery.refetch();
   }
 
   function generateBrief() {
@@ -101,9 +64,9 @@ function AiAssistantPage() {
         title={t("aiAssistant.page.title")}
       />
 
-      {isLoading ? (
+      {contextQuery.isLoading ? (
         <LoadingState message={t("aiAssistant.loading")} />
-      ) : isError ? (
+      ) : contextQuery.isError ? (
         <ErrorState
           message={t("aiAssistant.listLoadErrorMessage")}
           onRetry={retryAll}
@@ -144,43 +107,31 @@ function AiAssistantPage() {
 }
 
 function buildAiSummaries(
-  feedback: FeedbackInboxItem[],
-  roadmap: RoadmapFeature[],
-  bugs: BugReport[],
-  releases: Release[],
+  context: AiAssistantContext,
   t: (key: TranslationKey) => string,
 ): AiAssistantMetric[] {
-  const highUrgencyFeedback = feedback.filter(
-    (item) => item.urgency === "High",
-  ).length;
-  const highPriorityFeatures = roadmap.filter(
-    (feature) => feature.priority === "High",
-  ).length;
-  const criticalBugs = bugs.filter((bug) => bug.severity === "Critical").length;
-  const publicReleases = releases.filter((release) => release.isPublic).length;
-
   return [
     {
       label: t("aiAssistant.summary.feedbackLabel"),
-      value: String(highUrgencyFeedback),
+      value: String(context.highUrgencyFeedback),
       helper: t("aiAssistant.summary.feedbackHelper"),
       icon: "pi pi-inbox",
     },
     {
       label: t("aiAssistant.summary.roadmapLabel"),
-      value: String(highPriorityFeatures),
+      value: String(context.highPriorityRoadmap),
       helper: t("aiAssistant.summary.roadmapHelper"),
       icon: "pi pi-sitemap",
     },
     {
       label: t("aiAssistant.summary.bugsLabel"),
-      value: String(criticalBugs),
+      value: String(context.criticalBugs),
       helper: t("aiAssistant.summary.bugsHelper"),
       icon: "pi pi-exclamation-triangle",
     },
     {
       label: t("aiAssistant.summary.releasesLabel"),
-      value: String(publicReleases),
+      value: String(context.publicReleases),
       helper: t("aiAssistant.summary.releasesHelper"),
       icon: "pi pi-send",
     },
@@ -188,36 +139,33 @@ function buildAiSummaries(
 }
 
 function buildContextItems(
-  feedback: FeedbackInboxItem[],
-  roadmap: RoadmapFeature[],
-  bugs: BugReport[],
-  releases: Release[],
+  context: AiAssistantContext,
   t: (key: TranslationKey) => string,
 ): AiContextItem[] {
   return [
     {
       label: t("aiAssistant.context.feedback"),
-      value: String(feedback.length),
+      value: String(context.totalFeedback),
     },
     {
       label: t("aiAssistant.context.roadmap"),
-      value: String(roadmap.length),
+      value: String(context.totalRoadmap),
     },
     {
       label: t("aiAssistant.context.bugs"),
-      value: String(bugs.length),
+      value: String(context.totalBugs),
     },
     {
       label: t("aiAssistant.context.releases"),
-      value: String(releases.length),
+      value: String(context.totalReleases),
     },
     {
       label: t("aiAssistant.context.topFeedbackArea"),
-      value: topLabel(feedback, (item) => item.productArea) ?? t("aiAssistant.none"),
+      value: context.topFeedbackArea ?? t("aiAssistant.none"),
     },
     {
       label: t("aiAssistant.context.nextRelease"),
-      value: releases[0]?.name ?? t("aiAssistant.none"),
+      value: context.nextRelease ?? t("aiAssistant.none"),
     },
   ];
 }
@@ -247,18 +195,6 @@ function buildPromptPresets(t: (key: TranslationKey) => string): AiPromptPreset[
 
 function getAiLocale(language: string): AiLocale {
   return language.startsWith("fr") ? "fr" : "en";
-}
-
-function topLabel<T>(items: T[], getLabel: (item: T) => string) {
-  const counts = items.reduce<Record<string, number>>((result, item) => {
-    const label = getLabel(item);
-    result[label] = (result[label] ?? 0) + 1;
-    return result;
-  }, {});
-
-  return Object.entries(counts).sort(
-    (first, second) => second[1] - first[1] || first[0].localeCompare(second[0]),
-  )[0]?.[0];
 }
 
 export { AiAssistantPage };

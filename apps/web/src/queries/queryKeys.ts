@@ -47,6 +47,10 @@ const queryKeys = {
     detail: (releaseId: string) =>
       [...queryKeys.releases.all, "detail", releaseId] as const,
   },
+  ai: {
+    all: ["ai"] as const,
+    context: () => [...queryKeys.ai.all, "context"] as const,
+  },
 };
 
 export { queryKeys };
