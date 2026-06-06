@@ -12,6 +12,13 @@ type AiBrief = {
   title: string;
 };
 
+type AiLocale = "en" | "fr";
+
+type AiBriefRequest = {
+  locale: AiLocale;
+  prompt: string;
+};
+
 type AiPromptPreset = {
   description: string;
   icon: string;
@@ -27,7 +34,9 @@ type AiContextItem = {
 export type {
   AiAssistantMetric,
   AiBrief,
+  AiBriefRequest,
   AiBriefSection,
   AiContextItem,
+  AiLocale,
   AiPromptPreset,
 };

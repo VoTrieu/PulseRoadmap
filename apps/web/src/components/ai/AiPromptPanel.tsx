@@ -5,6 +5,7 @@ import { AppCard } from "../ui/AppCard";
 
 type AiPromptPanelProps = {
   buttonLabel: string;
+  isSubmitting: boolean;
   onPromptChange: (prompt: string) => void;
   onSubmit: () => void;
   placeholder: string;
@@ -15,6 +16,7 @@ type AiPromptPanelProps = {
 
 function AiPromptPanel({
   buttonLabel,
+  isSubmitting,
   onPromptChange,
   onSubmit,
   placeholder,
@@ -51,7 +53,13 @@ function AiPromptPanel({
             </button>
           ))}
         </div>
-        <Button icon="pi pi-sparkles" label={buttonLabel} type="submit" />
+        <Button
+          disabled={isSubmitting}
+          icon="pi pi-sparkles"
+          label={buttonLabel}
+          loading={isSubmitting}
+          type="submit"
+        />
       </form>
     </AppCard>
   );

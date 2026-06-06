@@ -12,10 +12,12 @@ import { useBugList } from "../../queries/bugQueries";
 import { useFeedbackList } from "../../queries/feedbackQueries";
 import { useReleaseList } from "../../queries/releaseQueries";
 import { useRoadmapFeatureList } from "../../queries/roadmapQueries";
+import { useGenerateAiBrief } from "../../queries/aiQueries";
 import type {
   AiAssistantMetric,
   AiBrief,
   AiContextItem,
+  AiLocale,
   AiPromptPreset,
 } from "../../types/aiAssistant";
 import type { BugReport } from "../../types/bug";
@@ -26,12 +28,13 @@ import type { RoadmapFeature } from "../../types/roadmap";
 const AI_CONTEXT_PAGE_SIZE = 100;
 
 function AiAssistantPage() {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [prompt, setPrompt] = useState(t("aiAssistant.defaultPrompt"));
   const [brief, setBrief] = useState<AiBrief>({
     sections: [],
     title: t("aiAssistant.brief.defaultTitle"),
   });
+  const generateBriefMutation = useGenerateAiBrief();
   const feedbackQuery = useFeedbackList(
     { search: "" },
     { skip: 0, take: AI_CONTEXT_PAGE_SIZE },
@@ -81,7 +84,13 @@ function AiAssistantPage() {
   }
 
   function generateBrief() {
-    setBrief(buildBrief(prompt, feedback, roadmap, bugs, releases, translate));
+    generateBriefMutation.mutate(
+      {
+        locale: getAiLocale(i18n.language),
+        prompt: prompt.trim() || t("aiAssistant.defaultPrompt"),
+      },
+      { onSuccess: setBrief },
+    );
   }
 
   return (
@@ -107,6 +116,7 @@ function AiAssistantPage() {
             <div className="grid gap-4">
               <AiPromptPanel
                 buttonLabel={t("aiAssistant.generate")}
+                isSubmitting={generateBriefMutation.isPending}
                 onPromptChange={setPrompt}
                 onSubmit={generateBrief}
                 placeholder={t("aiAssistant.promptPlaceholder")}
@@ -235,58 +245,8 @@ function buildPromptPresets(t: (key: TranslationKey) => string): AiPromptPreset[
   ];
 }
 
-function buildBrief(
-  prompt: string,
-  feedback: FeedbackInboxItem[],
-  roadmap: RoadmapFeature[],
-  bugs: BugReport[],
-  releases: Release[],
-  t: (key: TranslationKey) => string,
-): AiBrief {
-  const topFeedbackArea = topLabel(feedback, (item) => item.productArea) ?? t("aiAssistant.none");
-  const topRoadmapItem = roadmap[0]?.title ?? t("aiAssistant.none");
-  const criticalBugCount = bugs.filter((bug) => bug.severity === "Critical").length;
-  const nextRelease = releases[0]?.name ?? t("aiAssistant.none");
-
-  return {
-    title: t("aiAssistant.brief.generatedTitle"),
-    sections: [
-      {
-        title: t("aiAssistant.brief.sections.request"),
-        body: prompt.trim() || t("aiAssistant.defaultPrompt"),
-      },
-      {
-        title: t("aiAssistant.brief.sections.customerSignals"),
-        body: formatTemplate(t("aiAssistant.brief.customerSignalsBody"), {
-          count: feedback.length,
-          area: topFeedbackArea,
-        }),
-      },
-      {
-        title: t("aiAssistant.brief.sections.deliveryPlan"),
-        body: formatTemplate(t("aiAssistant.brief.deliveryPlanBody"), {
-          feature: topRoadmapItem,
-          release: nextRelease,
-        }),
-      },
-      {
-        title: t("aiAssistant.brief.sections.risks"),
-        body: formatTemplate(t("aiAssistant.brief.risksBody"), {
-          count: criticalBugCount,
-        }),
-      },
-    ],
-  };
-}
-
-function formatTemplate(
-  template: string,
-  values: Record<string, number | string>,
-) {
-  return Object.entries(values).reduce(
-    (result, [key, value]) => result.replace(`{{${key}}}`, String(value)),
-    template,
-  );
+function getAiLocale(language: string): AiLocale {
+  return language.startsWith("fr") ? "fr" : "en";
 }
 
 function topLabel<T>(items: T[], getLabel: (item: T) => string) {
