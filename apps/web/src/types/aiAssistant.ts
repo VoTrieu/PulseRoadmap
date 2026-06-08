@@ -20,6 +20,7 @@ type AiBriefRequest = {
 };
 
 type AiAssistantContext = {
+  aiProvider: string;
   totalFeedback: number;
   totalRoadmap: number;
   totalBugs: number;
@@ -33,6 +34,7 @@ type AiAssistantContext = {
 };
 
 type AiAssistantContextApiResponse = {
+  ai_provider: string;
   total_feedback: number;
   total_roadmap: number;
   total_bugs: number;

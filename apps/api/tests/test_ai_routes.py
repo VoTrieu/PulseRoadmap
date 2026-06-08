@@ -22,6 +22,7 @@ class AiRoutesTest(TestCase):
         body = response.json()
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(body["ai_provider"], "local")
         self.assertEqual(body["total_feedback"], 2)
         self.assertEqual(body["total_roadmap"], 1)
         self.assertEqual(body["total_bugs"], 1)

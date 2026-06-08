@@ -22,6 +22,7 @@ class AiBriefResponse(BaseModel):
 
 
 class AiAssistantContextResponse(BaseModel):
+    ai_provider: str
     total_feedback: int
     total_roadmap: int
     total_bugs: int

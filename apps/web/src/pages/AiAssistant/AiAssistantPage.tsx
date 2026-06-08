@@ -144,6 +144,10 @@ function buildContextItems(
 ): AiContextItem[] {
   return [
     {
+      label: t("aiAssistant.context.provider"),
+      value: formatProviderName(context.aiProvider),
+    },
+    {
       label: t("aiAssistant.context.feedback"),
       value: String(context.totalFeedback),
     },
@@ -195,6 +199,10 @@ function buildPromptPresets(t: (key: TranslationKey) => string): AiPromptPreset[
 
 function getAiLocale(language: string): AiLocale {
   return language.startsWith("fr") ? "fr" : "en";
+}
+
+function formatProviderName(provider: string) {
+  return provider.charAt(0).toUpperCase() + provider.slice(1);
 }
 
 export { AiAssistantPage };

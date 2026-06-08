@@ -1,4 +1,5 @@
 from app.data.repositories.ai_repository import AiProductContext
+from app.core.config import settings
 from app.schemas.ai import (
     AiAssistantContextResponse,
     AiBriefRequest,
@@ -21,6 +22,7 @@ def build_assistant_context(
     context: AiProductContext,
 ) -> AiAssistantContextResponse:
     return AiAssistantContextResponse(
+        ai_provider=settings.ai_provider.strip().lower(),
         total_feedback=len(context.feedback),
         total_roadmap=len(context.roadmap),
         total_bugs=len(context.bugs),

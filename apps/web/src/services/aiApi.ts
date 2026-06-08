@@ -23,6 +23,7 @@ function mapAiAssistantContext(
   response: AiAssistantContextApiResponse,
 ): AiAssistantContext {
   return {
+    aiProvider: response.ai_provider,
     totalFeedback: response.total_feedback,
     totalRoadmap: response.total_roadmap,
     totalBugs: response.total_bugs,

@@ -33,6 +33,7 @@ class AiBriefServiceTest(TestCase):
 
         result = build_assistant_context(context)
 
+        self.assertEqual(result.ai_provider, "local")
         self.assertEqual(result.total_feedback, 3)
         self.assertEqual(result.total_roadmap, 2)
         self.assertEqual(result.total_bugs, 2)
