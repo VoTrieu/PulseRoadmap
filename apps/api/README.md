@@ -38,6 +38,12 @@ Run the API:
 uvicorn app.main:app --reload --port 8000
 ```
 
+Run backend tests:
+
+```bash
+python -m unittest discover -s tests
+```
+
 Open Swagger UI:
 
 ```txt
