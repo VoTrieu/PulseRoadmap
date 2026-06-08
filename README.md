@@ -4,6 +4,36 @@ PulseRoadmap is a full-stack B2B SaaS-style product operations platform for prod
 
 The project is being built as a portfolio-grade product engineering project with a React frontend, FastAPI backend, PostgreSQL database, typed API boundaries, reusable UI components, pagination, filtering, and internationalization.
 
+## Screenshots
+
+### Dashboard
+
+![Dashboard](docs/images/dashboard.png)
+
+### Feedback Inbox
+
+![Feedback inbox](docs/images/feedback.png)
+
+### Roadmap Planning
+
+![Roadmap planning](docs/images/roadmap.png)
+
+### Bug Triage
+
+![Bug triage](docs/images/bugs.png)
+
+### Release Management
+
+![Release management](docs/images/releases.png)
+
+### Analytics
+
+![Analytics](docs/images/analytics.png)
+
+### AI Assistant
+
+![AI Assistant](docs/images/ai-assistant.png)
+
 ## Current Features
 
 ### Dashboard
@@ -32,8 +62,38 @@ The project is being built as a portfolio-grade product engineering project with
 - Roadmap planning page
 - Roadmap board grouped by status: Discovery, Planned, In progress, Shipped
 - Roadmap feature cards with owner, milestone, priority, linked feedback count, and scoring
-- Backend Roadmap CRUD API started
-- Frontend Roadmap API layer, mapper, service, and TanStack Query hooks started
+- Create, read, update, and delete roadmap feature records
+- Search and filter roadmap work by status, priority, and product area
+- Server-side pagination and typed frontend/backend mapping
+
+### Bugs
+
+- Bug triage page
+- Create, read, update, and delete bug reports
+- Track customer, severity, status, assignee, source, reproduction steps, and linked release
+- Search, filter, summarize, and paginate bug reports
+
+### Releases
+
+- Release management page
+- Create, read, update, and delete releases
+- Track release type, status, owner, target date, shipped date, public/internal notes, included features, and included bugs
+- Public changelog visibility flag and release summary metrics
+
+### Analytics
+
+- Product analytics page using feedback, roadmap, bug, and release data
+- Summary cards for product operations health
+- Feedback area trends, bug severity mix, roadmap status, release pipeline, and generated operational insights
+
+### AI Assistant
+
+- AI-assisted product workspace
+- Product context endpoint for feedback, roadmap, bugs, releases, and active AI provider
+- Draft product brief generation through a backend AI provider boundary
+- Local deterministic provider for offline demos
+- Optional OpenAI provider using the Responses API with structured JSON output
+- Service-level and route-level backend tests for AI behavior
 
 ### Internationalization
 
@@ -86,6 +146,7 @@ apps/
       data/repositories/   Database query and persistence logic
       data/migrations/     Alembic migrations
       schemas/             Pydantic request/response schemas
+      services/            Business logic and AI provider integration
   web/
     src/
       components/          Reusable UI and feature components
@@ -193,6 +254,13 @@ cd apps/api
 .venv/bin/python -m compileall app
 ```
 
+### Backend Tests
+
+```bash
+cd apps/api
+.venv/bin/python -m unittest discover -s tests
+```
+
 ### Create Alembic Migration
 
 ```bash
@@ -256,37 +324,78 @@ PATCH  /api/roadmap/{feature_id}
 DELETE /api/roadmap/{feature_id}
 ```
 
+### Bugs
+
+```text
+GET    /api/bugs
+POST   /api/bugs
+PATCH  /api/bugs/{bug_id}
+DELETE /api/bugs/{bug_id}
+```
+
+### Releases
+
+```text
+GET    /api/releases
+POST   /api/releases
+PATCH  /api/releases/{release_id}
+DELETE /api/releases/{release_id}
+```
+
+### AI Assistant
+
+```text
+GET  /api/ai/context
+POST /api/ai/brief
+```
+
+Default local AI provider:
+
+```env
+PULSEROADMAP_AI_PROVIDER="local"
+```
+
+Optional OpenAI provider:
+
+```env
+PULSEROADMAP_AI_PROVIDER="openai"
+PULSEROADMAP_OPENAI_API_KEY="your-api-key"
+PULSEROADMAP_OPENAI_MODEL="gpt-5.2"
+```
+
 ## Engineering Highlights
 
 - Built a full-stack SaaS-style product operations platform using React, FastAPI, PostgreSQL, and Docker Compose.
 - Implemented typed frontend/backend data boundaries with TypeScript types, Pydantic schemas, and centralized mapper functions.
 - Integrated TanStack Query and Axios for API state management, caching, mutation invalidation, loading states, and centralized error handling.
 - Designed reusable UI components for cards, page headers, dropdowns, paginated tables, dialogs, loading states, error states, and layout.
-- Implemented server-side filtering and pagination for customer feedback using FastAPI query parameters and SQLAlchemy queries.
+- Implemented server-side filtering and pagination for product modules using FastAPI query parameters and SQLAlchemy queries.
 - Added PostgreSQL persistence with SQLAlchemy models, repository pattern, Alembic migrations, and environment-based database configuration.
 - Added English/French internationalization using react-i18next with type-safe translation keys.
+- Added AI-assisted product brief generation with local and OpenAI provider paths behind a backend provider boundary.
 - Applied clean architecture separation across routes, schemas, repositories, models, services, mappers, queries, and UI components.
 
 ## CV Summary
 
 **PulseRoadmap - Full-Stack Product Operations Platform**
 
-Built a B2B SaaS-style product operations platform for managing customer feedback, roadmap planning, and product analytics. Developed a React + TypeScript frontend with PrimeReact, Tailwind CSS, React Router, TanStack Query, Axios, and react-i18next. Built a FastAPI backend with Pydantic, SQLAlchemy 2.0, Alembic, PostgreSQL, and Docker Compose. Implemented CRUD APIs, server-side filtering, pagination, reusable UI components, typed API mapping, centralized error handling, and English/French localization.
+Built a B2B SaaS-style product operations platform for managing customer feedback, roadmap planning, bug triage, release management, product analytics, and AI-assisted product briefs. Developed a React + TypeScript frontend with PrimeReact, Tailwind CSS, React Router, TanStack Query, Axios, and react-i18next. Built a FastAPI backend with Pydantic, SQLAlchemy 2.0, Alembic, PostgreSQL, and Docker Compose. Implemented CRUD APIs, server-side filtering, pagination, reusable UI components, typed API mapping, centralized error handling, English/French localization, backend tests, and configurable AI providers.
 
 ## Suggested CV Bullet Points
 
 - Built a full-stack product operations SaaS application using React, TypeScript, FastAPI, PostgreSQL, SQLAlchemy, Alembic, and Docker Compose.
-- Implemented customer feedback CRUD workflows with server-side search, filtering, pagination, reusable form dialogs, and API mutation invalidation using TanStack Query.
+- Implemented customer feedback, roadmap, bug triage, and release management workflows with server-side search, filtering, pagination, reusable form dialogs, and API mutation invalidation using TanStack Query.
 - Designed typed API integration layers with Axios services, TypeScript domain/API types, Pydantic schemas, and mapper functions between snake_case backend data and camelCase frontend models.
+- Built an AI-assisted product brief workflow with local and OpenAI provider implementations, structured output parsing, environment-based provider selection, and backend service/route tests.
 - Added internationalization with react-i18next, supporting English/French translations and type-safe translation keys.
 - Structured the codebase with clean separation of concerns across frontend components/pages/queries/services and backend routes/schemas/repositories/models.
 
 ## Next Planned Work
 
-- Connect the Roadmap frontend page to the Roadmap backend API.
-- Add Roadmap create/edit/delete UI.
-- Add Roadmap filtering and pagination.
 - Link feedback records to roadmap features.
 - Add authentication and organization/workspace support.
-- Add release management and changelog pages.
-- Add AI-assisted summarization and release note drafting.
+- Add role-based access control and workspace-level permissions.
+- Add file attachments for feedback and bug reports.
+- Add notifications and background jobs for release/change events.
+- Add stronger analytics filtering and export workflows.
+- Add CI checks for frontend build, backend compile, and backend tests.
