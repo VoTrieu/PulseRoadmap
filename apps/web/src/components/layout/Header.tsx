@@ -3,6 +3,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "../../context/AuthContext";
 import { isSupportedLocale, type Locale } from "../../i18n/i18n";
 import { AppDropdown } from "../ui/AppDropdown";
 
@@ -33,10 +34,12 @@ type HeaderProps = {
 
 export function Header({ onMenuClick }: HeaderProps) {
   const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]);
+  const { currentUser, logoutUser } = useAuth();
   const { i18n, t } = useTranslation();
   const locale = isSupportedLocale(i18n.resolvedLanguage)
     ? i18n.resolvedLanguage
     : "en";
+  const initials = getInitials(currentUser?.fullName ?? currentUser?.email ?? "User");
 
   return (
     <header className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center">
@@ -86,8 +89,26 @@ export function Header({ onMenuClick }: HeaderProps) {
           text
           rounded
         />
-        <Avatar label="TV" shape="circle" className="bg-slate-900 text-white" />
+        <Avatar label={initials} shape="circle" className="bg-slate-900 text-white" />
+        <Button
+          aria-label={t("auth.logout")}
+          className="h-11 w-11 text-slate-700"
+          icon="pi pi-sign-out"
+          onClick={logoutUser}
+          text
+          rounded
+        />
       </div>
     </header>
   );
+}
+
+function getInitials(value: string): string {
+  const words = value.trim().split(/\s+/).filter(Boolean);
+
+  if (words.length >= 2) {
+    return `${words[0][0]}${words[1][0]}`.toUpperCase();
+  }
+
+  return value.slice(0, 2).toUpperCase();
 }

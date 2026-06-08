@@ -2,6 +2,8 @@ import type { NavItem } from "./types/navigation";
 
 const appRoutes = {
   dashboard: "/",
+  login: "/login",
+  register: "/register",
   feedback: "/feedback",
   roadmap: "/roadmap",
   bugs: "/bugs",
