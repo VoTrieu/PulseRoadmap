@@ -44,6 +44,20 @@ Run backend tests:
 python -m unittest discover -s tests
 ```
 
+Use the local AI provider by default:
+
+```env
+PULSEROADMAP_AI_PROVIDER="local"
+```
+
+To use OpenAI for generated briefs, set:
+
+```env
+PULSEROADMAP_AI_PROVIDER="openai"
+PULSEROADMAP_OPENAI_API_KEY="your-api-key"
+PULSEROADMAP_OPENAI_MODEL="gpt-5.2"
+```
+
 Open Swagger UI:
 
 ```txt

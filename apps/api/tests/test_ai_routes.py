@@ -79,6 +79,31 @@ class AiRoutesTest(TestCase):
         self.assertEqual(response.status_code, 503)
         self.assertEqual(body["detail"], "Unsupported AI provider: unknown")
 
+    def test_post_ai_brief_returns_missing_openai_key_error(self) -> None:
+        with (
+            patch(
+                "app.api.routes.ai.ai_repository.get_product_context",
+                return_value=_context(),
+            ),
+            patch("app.services.ai_providers.settings.ai_provider", "openai"),
+            patch("app.services.ai_providers.settings.openai_api_key", ""),
+        ):
+            response = self.client.post(
+                "/api/ai/brief",
+                json={
+                    "locale": "en",
+                    "prompt": "Create an executive product brief",
+                },
+            )
+
+        body = response.json()
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(
+            body["detail"],
+            "OpenAI API key is required when AI provider is openai",
+        )
+
 
 def _context() -> AiProductContext:
     return AiProductContext(
