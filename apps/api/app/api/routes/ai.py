@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.data.db.session import get_db
@@ -21,4 +21,8 @@ def generate_product_brief(
     db: Session = Depends(get_db),
 ) -> AiBriefResponse:
     context = ai_repository.get_product_context(db)
-    return ai_brief_service.generate_product_brief(payload, context)
+
+    try:
+        return ai_brief_service.generate_product_brief(payload, context)
+    except ValueError as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error

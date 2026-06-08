@@ -4,18 +4,17 @@ from app.schemas.ai import (
     AiBriefRequest,
     AiBriefResponse,
 )
-from app.services.ai_providers import AiBriefProvider, LocalAiBriefProvider
+from app.services.ai_providers import AiBriefProvider, get_ai_brief_provider
 from app.services.ai_utils import top_label
-
-DEFAULT_PROVIDER = LocalAiBriefProvider()
 
 
 def generate_product_brief(
     payload: AiBriefRequest,
     context: AiProductContext,
-    provider: AiBriefProvider = DEFAULT_PROVIDER,
+    provider: AiBriefProvider | None = None,
 ) -> AiBriefResponse:
-    return provider.generate_brief(payload, context)
+    brief_provider = provider or get_ai_brief_provider()
+    return brief_provider.generate_brief(payload, context)
 
 
 def build_assistant_context(

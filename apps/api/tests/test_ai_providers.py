@@ -1,9 +1,10 @@
 from types import SimpleNamespace
 from unittest import TestCase
+from unittest.mock import patch
 
 from app.data.repositories.ai_repository import AiProductContext
 from app.schemas.ai import AiBriefRequest
-from app.services.ai_providers import LocalAiBriefProvider
+from app.services.ai_providers import LocalAiBriefProvider, get_ai_brief_provider
 
 
 class LocalAiBriefProviderTest(TestCase):
@@ -28,6 +29,17 @@ class LocalAiBriefProviderTest(TestCase):
         self.assertIn("Analytics", result.sections[1].body)
         self.assertIn("Revenue impact scoring", result.sections[2].body)
         self.assertIn("Analytics launch", result.sections[2].body)
+
+    def test_get_ai_brief_provider_returns_local_provider(self) -> None:
+        with patch("app.services.ai_providers.settings.ai_provider", "local"):
+            result = get_ai_brief_provider()
+
+        self.assertIsInstance(result, LocalAiBriefProvider)
+
+    def test_get_ai_brief_provider_rejects_unknown_provider(self) -> None:
+        with patch("app.services.ai_providers.settings.ai_provider", "unknown"):
+            with self.assertRaises(ValueError):
+                get_ai_brief_provider()
 
 
 def _record(**values: object) -> SimpleNamespace:

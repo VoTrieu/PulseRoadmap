@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from app.core.config import settings
 from app.data.repositories.ai_repository import AiProductContext
 from app.schemas.ai import AiBriefRequest, AiBriefResponse, AiBriefSection
 from app.services.ai_utils import top_label
@@ -103,3 +104,12 @@ class LocalAiBriefProvider(AiBriefProvider):
                 ),
             ],
         )
+
+
+def get_ai_brief_provider() -> AiBriefProvider:
+    provider_name = settings.ai_provider.strip().lower()
+
+    if provider_name == "local":
+        return LocalAiBriefProvider()
+
+    raise ValueError(f"Unsupported AI provider: {settings.ai_provider}")
