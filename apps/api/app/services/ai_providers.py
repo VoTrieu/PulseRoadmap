@@ -144,8 +144,15 @@ class OpenAiBriefProvider(AiBriefProvider):
             )
             response.raise_for_status()
             return _parse_openai_brief(response.json())
-        except (httpx.HTTPError, KeyError, TypeError, json.JSONDecodeError, ValidationError) as error:
-            raise ValueError("OpenAI brief generation failed") from error
+        except httpx.HTTPStatusError as error:
+            detail = _extract_openai_error_message(error.response)
+            raise ValueError(
+                f"OpenAI request failed with {error.response.status_code}: {detail}"
+            ) from error
+        except httpx.RequestError as error:
+            raise ValueError(f"OpenAI request failed: {error}") from error
+        except (KeyError, TypeError, json.JSONDecodeError, ValidationError) as error:
+            raise ValueError("OpenAI response could not be parsed") from error
 
 
 def get_ai_brief_provider() -> AiBriefProvider:
@@ -281,3 +288,16 @@ def _extract_output_text(response: dict[str, Any]) -> str:
                 return content_item["text"]
 
     raise KeyError("output_text")
+
+
+def _extract_openai_error_message(response: httpx.Response) -> str:
+    try:
+        body = response.json()
+    except json.JSONDecodeError:
+        return response.text[:300] or "No response body"
+
+    error = body.get("error")
+    if isinstance(error, dict) and isinstance(error.get("message"), str):
+        return error["message"]
+
+    return str(body)[:300]

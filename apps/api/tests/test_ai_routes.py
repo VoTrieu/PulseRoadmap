@@ -13,9 +13,12 @@ class AiRoutesTest(TestCase):
         self.client = TestClient(app)
 
     def test_get_ai_context_returns_assistant_context(self) -> None:
-        with patch(
-            "app.api.routes.ai.ai_repository.get_product_context",
-            return_value=_context(),
+        with (
+            patch(
+                "app.api.routes.ai.ai_repository.get_product_context",
+                return_value=_context(),
+            ),
+            patch("app.services.ai_brief_service.settings.ai_provider", "local"),
         ):
             response = self.client.get("/api/ai/context")
 
@@ -31,9 +34,12 @@ class AiRoutesTest(TestCase):
         self.assertEqual(body["next_release"], "Workspace roles")
 
     def test_post_ai_brief_returns_generated_brief(self) -> None:
-        with patch(
-            "app.api.routes.ai.ai_repository.get_product_context",
-            return_value=_context(),
+        with (
+            patch(
+                "app.api.routes.ai.ai_repository.get_product_context",
+                return_value=_context(),
+            ),
+            patch("app.services.ai_providers.settings.ai_provider", "local"),
         ):
             response = self.client.post(
                 "/api/ai/brief",

@@ -1,8 +1,10 @@
 from types import SimpleNamespace
 from unittest import TestCase
+from unittest.mock import patch
 
 from app.data.repositories.ai_repository import AiProductContext
 from app.schemas.ai import AiBriefRequest
+from app.services.ai_providers import LocalAiBriefProvider
 from app.services.ai_brief_service import (
     build_assistant_context,
     generate_product_brief,
@@ -31,7 +33,8 @@ class AiBriefServiceTest(TestCase):
             ],
         )
 
-        result = build_assistant_context(context)
+        with patch("app.services.ai_brief_service.settings.ai_provider", "local"):
+            result = build_assistant_context(context)
 
         self.assertEqual(result.ai_provider, "local")
         self.assertEqual(result.total_feedback, 3)
@@ -57,7 +60,7 @@ class AiBriefServiceTest(TestCase):
             locale="en",
         )
 
-        result = generate_product_brief(payload, context)
+        result = generate_product_brief(payload, context, provider=LocalAiBriefProvider())
 
         self.assertEqual(result.title, "Generated product brief")
         self.assertEqual(len(result.sections), 4)
@@ -77,7 +80,7 @@ class AiBriefServiceTest(TestCase):
         )
         payload = AiBriefRequest(prompt="Summarize product status", locale="en")
 
-        result = generate_product_brief(payload, context)
+        result = generate_product_brief(payload, context, provider=LocalAiBriefProvider())
 
         self.assertEqual(result.title, "Generated product brief")
         self.assertIn("None", result.sections[1].body)
