@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.security import decode_access_token
 from app.data.db.session import get_db
-from app.data.models.auth import User
+from app.data.models.auth import OrganizationMember, User
 from app.data.repositories import auth_repository
 
 bearer_scheme = HTTPBearer(auto_error=False)
@@ -40,3 +40,18 @@ def get_current_user(
         raise unauthorized_error
 
     return user
+
+
+def get_current_organization_id(current_user: User = Depends(get_current_user)) -> str:
+    membership: OrganizationMember | None = next(
+        iter(current_user.memberships),
+        None,
+    )
+
+    if membership is None:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not belong to an organization",
+        )
+
+    return membership.organization_id

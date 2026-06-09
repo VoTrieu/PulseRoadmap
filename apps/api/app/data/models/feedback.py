@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, func
+from sqlalchemy import DateTime, ForeignKey, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.data.db.base import Base
@@ -10,6 +10,10 @@ class Feedback(Base):
     __tablename__ = "feedback"
 
     id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     customer: Mapped[str] = mapped_column(String(120), nullable=False)
     request: Mapped[str] = mapped_column(String(500), nullable=False)
     product_area: Mapped[str] = mapped_column(String(80), nullable=False)

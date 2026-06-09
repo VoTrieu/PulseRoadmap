@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.data.db.base import Base
@@ -10,6 +10,10 @@ class BugReport(Base):
     __tablename__ = "bug_reports"
 
     id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(
+        ForeignKey("organizations.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     title: Mapped[str] = mapped_column(String(160), nullable=False)
     customer: Mapped[str] = mapped_column(String(120), nullable=False)
     product_area: Mapped[str] = mapped_column(String(80), nullable=False)

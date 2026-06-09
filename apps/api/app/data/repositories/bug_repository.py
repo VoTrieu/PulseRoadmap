@@ -9,6 +9,7 @@ from app.schemas.bug import BugReportCreate, BugReportUpdate
 
 def list_bugs(
     db: Session,
+    organization_id: str,
     search: str | None = None,
     severity: str | None = None,
     status: str | None = None,
@@ -16,7 +17,7 @@ def list_bugs(
     skip: int = 0,
     take: int = 10,
 ) -> tuple[list[BugReport], int]:
-    statement = select(BugReport)
+    statement = select(BugReport).where(BugReport.organization_id == organization_id)
     search_value = search.strip() if search else None
 
     if search_value:
@@ -54,13 +55,19 @@ def list_bugs(
     return list(db.scalars(data_stmt)), total_count
 
 
-def get_bug_by_id(db: Session, bug_id: str) -> BugReport | None:
-    return db.get(BugReport, bug_id)
+def get_bug_by_id(db: Session, organization_id: str, bug_id: str) -> BugReport | None:
+    statement = select(BugReport).where(
+        BugReport.id == bug_id,
+        BugReport.organization_id == organization_id,
+    )
+
+    return db.scalar(statement)
 
 
-def create_bug(db: Session, payload: BugReportCreate) -> BugReport:
+def create_bug(db: Session, organization_id: str, payload: BugReportCreate) -> BugReport:
     bug = BugReport(
         id=f"bug-{uuid4().hex[:8]}",
+        organization_id=organization_id,
         **payload.model_dump(),
     )
 
@@ -72,9 +79,9 @@ def create_bug(db: Session, payload: BugReportCreate) -> BugReport:
 
 
 def update_bug(
-    db: Session, bug_id: str, payload: BugReportUpdate
+    db: Session, organization_id: str, bug_id: str, payload: BugReportUpdate
 ) -> BugReport | None:
-    bug = db.get(BugReport, bug_id)
+    bug = get_bug_by_id(db, organization_id, bug_id)
 
     if bug is None:
         return None
@@ -90,8 +97,8 @@ def update_bug(
     return bug
 
 
-def delete_bug(db: Session, bug_id: str) -> bool:
-    bug = db.get(BugReport, bug_id)
+def delete_bug(db: Session, organization_id: str, bug_id: str) -> bool:
+    bug = get_bug_by_id(db, organization_id, bug_id)
 
     if bug is None:
         return False

@@ -9,6 +9,7 @@ from app.schemas.feedback import FeedbackCreate, FeedbackUpdate
 
 def list_feedbacks(
     db: Session,
+    organization_id: str,
     search: str | None = None,
     product_area: str | None = None,
     urgency: str | None = None,
@@ -17,7 +18,7 @@ def list_feedbacks(
 ) -> tuple[list[Feedback], int]:
 
     # 1. Base statement where we apply all shared filters
-    base_stmt = select(Feedback)
+    base_stmt = select(Feedback).where(Feedback.organization_id == organization_id)
     search_value = search.strip() if search else None
 
     if search_value:
@@ -54,13 +55,23 @@ def list_feedbacks(
     return list(db.scalars(data_stmt)), total_count
 
 
-def get_feedback_by_id(db: Session, feedback_id: str) -> Feedback | None:
-    return db.get(Feedback, feedback_id)
+def get_feedback_by_id(
+    db: Session, organization_id: str, feedback_id: str
+) -> Feedback | None:
+    statement = select(Feedback).where(
+        Feedback.id == feedback_id,
+        Feedback.organization_id == organization_id,
+    )
+
+    return db.scalar(statement)
 
 
-def create_feedback(db: Session, payload: FeedbackCreate) -> Feedback:
+def create_feedback(
+    db: Session, organization_id: str, payload: FeedbackCreate
+) -> Feedback:
     feedback = Feedback(
         id=f"fb-{uuid4().hex[:8]}",
+        organization_id=organization_id,
         **payload.model_dump(),
     )
 
@@ -71,8 +82,8 @@ def create_feedback(db: Session, payload: FeedbackCreate) -> Feedback:
     return feedback
 
 
-def delete_feedback(db: Session, feedback_id: str) -> bool:
-    feedback = db.get(Feedback, feedback_id)
+def delete_feedback(db: Session, organization_id: str, feedback_id: str) -> bool:
+    feedback = get_feedback_by_id(db, organization_id, feedback_id)
 
     if feedback is None:
         return False
@@ -84,9 +95,9 @@ def delete_feedback(db: Session, feedback_id: str) -> bool:
 
 
 def update_feedback(
-    db: Session, feedback_id: str, payload: FeedbackUpdate
+    db: Session, organization_id: str, feedback_id: str, payload: FeedbackUpdate
 ) -> Feedback | None:
-    feedback = db.get(Feedback, feedback_id)
+    feedback = get_feedback_by_id(db, organization_id, feedback_id)
 
     if feedback is None:
         return None

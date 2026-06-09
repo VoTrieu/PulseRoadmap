@@ -9,6 +9,7 @@ from app.schemas.release import ReleaseCreate, ReleaseUpdate
 
 def list_releases(
     db: Session,
+    organization_id: str,
     search: str | None = None,
     status: str | None = None,
     release_type: str | None = None,
@@ -16,7 +17,7 @@ def list_releases(
     skip: int = 0,
     take: int = 10,
 ) -> tuple[list[Release], int]:
-    statement = select(Release)
+    statement = select(Release).where(Release.organization_id == organization_id)
     search_value = search.strip() if search else None
 
     if search_value:
@@ -54,13 +55,21 @@ def list_releases(
     return list(db.scalars(data_stmt)), total_count
 
 
-def get_release_by_id(db: Session, release_id: str) -> Release | None:
-    return db.get(Release, release_id)
+def get_release_by_id(
+    db: Session, organization_id: str, release_id: str
+) -> Release | None:
+    statement = select(Release).where(
+        Release.id == release_id,
+        Release.organization_id == organization_id,
+    )
+
+    return db.scalar(statement)
 
 
-def create_release(db: Session, payload: ReleaseCreate) -> Release:
+def create_release(db: Session, organization_id: str, payload: ReleaseCreate) -> Release:
     release = Release(
         id=f"rel-{uuid4().hex[:8]}",
+        organization_id=organization_id,
         **payload.model_dump(),
     )
 
@@ -72,9 +81,9 @@ def create_release(db: Session, payload: ReleaseCreate) -> Release:
 
 
 def update_release(
-    db: Session, release_id: str, payload: ReleaseUpdate
+    db: Session, organization_id: str, release_id: str, payload: ReleaseUpdate
 ) -> Release | None:
-    release = db.get(Release, release_id)
+    release = get_release_by_id(db, organization_id, release_id)
 
     if release is None:
         return None
@@ -90,8 +99,8 @@ def update_release(
     return release
 
 
-def delete_release(db: Session, release_id: str) -> bool:
-    release = db.get(Release, release_id)
+def delete_release(db: Session, organization_id: str, release_id: str) -> bool:
+    release = get_release_by_id(db, organization_id, release_id)
 
     if release is None:
         return False

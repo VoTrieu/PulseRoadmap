@@ -4,13 +4,18 @@ from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 
+from app.api.dependencies import get_current_organization_id
 from app.data.repositories.ai_repository import AiProductContext
 from app.main import app
 
 
 class AiRoutesTest(TestCase):
     def setUp(self) -> None:
+        app.dependency_overrides[get_current_organization_id] = lambda: "org-test"
         self.client = TestClient(app)
+
+    def tearDown(self) -> None:
+        app.dependency_overrides.clear()
 
     def test_get_ai_context_returns_assistant_context(self) -> None:
         with (

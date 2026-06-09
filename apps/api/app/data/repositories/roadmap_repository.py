@@ -9,6 +9,7 @@ from app.schemas.roadmap import RoadmapFeatureCreate, RoadmapFeatureUpdate
 
 def list_features(
     db: Session,
+    organization_id: str,
     search: str | None = None,
     status: str | None = None,
     priority: str | None = None,
@@ -16,7 +17,9 @@ def list_features(
     skip: int = 0,
     take: int = 10,
 ) -> tuple[list[RoadMapFeature], int]:
-    statement = select(RoadMapFeature)
+    statement = select(RoadMapFeature).where(
+        RoadMapFeature.organization_id == organization_id
+    )
     search_value = search.strip() if search else None
 
     if search_value:
@@ -54,13 +57,23 @@ def list_features(
     return list(db.scalars(data_stmt)), total_count
 
 
-def get_feature_by_id(db: Session, feature_id: str) -> RoadMapFeature | None:
-    return db.get(RoadMapFeature, feature_id)
+def get_feature_by_id(
+    db: Session, organization_id: str, feature_id: str
+) -> RoadMapFeature | None:
+    statement = select(RoadMapFeature).where(
+        RoadMapFeature.id == feature_id,
+        RoadMapFeature.organization_id == organization_id,
+    )
+
+    return db.scalar(statement)
 
 
-def create_feature(db: Session, payload: RoadmapFeatureCreate) -> RoadMapFeature:
+def create_feature(
+    db: Session, organization_id: str, payload: RoadmapFeatureCreate
+) -> RoadMapFeature:
     feature = RoadMapFeature(
         id=f"rf-{uuid4().hex[:8]}",
+        organization_id=organization_id,
         **payload.model_dump(),
     )
 
@@ -72,9 +85,9 @@ def create_feature(db: Session, payload: RoadmapFeatureCreate) -> RoadMapFeature
 
 
 def update_feature(
-    db: Session, feature_id: str, payload: RoadmapFeatureUpdate
+    db: Session, organization_id: str, feature_id: str, payload: RoadmapFeatureUpdate
 ) -> RoadMapFeature | None:
-    feature = db.get(RoadMapFeature, feature_id)
+    feature = get_feature_by_id(db, organization_id, feature_id)
 
     if feature is None:
         return None
@@ -90,8 +103,8 @@ def update_feature(
     return feature
 
 
-def delete_feature(db: Session, feature_id: str) -> bool:
-    feature = db.get(RoadMapFeature, feature_id)
+def delete_feature(db: Session, organization_id: str, feature_id: str) -> bool:
+    feature = get_feature_by_id(db, organization_id, feature_id)
 
     if feature is None:
         return False
