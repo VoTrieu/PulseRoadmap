@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.core.security import hash_password
 from app.data.models.auth import Organization, OrganizationMember, User
-from app.schemas.auth import UserCreate
+from app.schemas.auth import OrganizationCreate, UserCreate
 
 
 def get_user_by_email(db: Session, email: str) -> User | None:
@@ -52,6 +52,28 @@ def create_user_with_organization(db: Session, payload: UserCreate) -> User:
     db.refresh(user)
 
     return user
+
+
+def create_organization_for_user(
+    db: Session, user: User, payload: OrganizationCreate
+) -> OrganizationMember:
+    organization = Organization(
+        id=f"org-{uuid4().hex[:12]}",
+        name=payload.name,
+        slug=_create_slug(payload.name),
+    )
+    membership = OrganizationMember(
+        id=f"mem-{uuid4().hex[:12]}",
+        organization=organization,
+        user_id=user.id,
+        role="Owner",
+    )
+
+    db.add_all([organization, membership])
+    db.commit()
+    db.refresh(membership)
+
+    return membership
 
 
 def _create_slug(name: str) -> str:

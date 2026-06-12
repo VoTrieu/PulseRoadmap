@@ -17,6 +17,10 @@ class UserLogin(BaseModel):
     password: str
 
 
+class OrganizationCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=160)
+
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

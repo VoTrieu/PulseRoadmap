@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, Header, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt.exceptions import InvalidTokenError
 from sqlalchemy.orm import Session
@@ -42,7 +42,27 @@ def get_current_user(
     return user
 
 
-def get_current_organization_id(current_user: User = Depends(get_current_user)) -> str:
+def get_current_organization_id(
+    current_user: User = Depends(get_current_user),
+    requested_organization_id: str | None = Header(
+        default=None,
+        alias="X-Organization-Id",
+    ),
+) -> str:
+    if requested_organization_id is not None:
+        has_membership = any(
+            membership.organization_id == requested_organization_id
+            for membership in current_user.memberships
+        )
+
+        if not has_membership:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="User does not belong to the requested organization",
+            )
+
+        return requested_organization_id
+
     membership: OrganizationMember | None = next(
         iter(current_user.memberships),
         None,
