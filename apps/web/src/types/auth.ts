@@ -36,9 +36,14 @@ type RegisterPayload = {
   organization_name: string;
 };
 
+type CreateOrganizationPayload = {
+  name: string;
+};
+
 export type {
   AuthOrganization,
   AuthTokenResponse,
+  CreateOrganizationPayload,
   CurrentUser,
   CurrentUserApiItem,
   LoginPayload,

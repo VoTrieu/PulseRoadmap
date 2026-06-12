@@ -1,10 +1,12 @@
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { isSupportedLocale, type Locale } from "../../i18n/i18n";
 import type { AuthOrganization } from "../../types/auth";
+import { CreateWorkspaceDialog } from "../auth/CreateWorkspaceDialog";
 import { AppDropdown } from "../ui/AppDropdown";
 
 const localeOptions: { label: string; value: Locale }[] = [
@@ -25,14 +27,23 @@ type HeaderProps = {
 };
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const { currentUser, logoutUser } = useAuth();
+  const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] = useState(false);
+  const {
+    activeOrganizationId,
+    currentUser,
+    logoutUser,
+    setActiveOrganizationId,
+  } = useAuth();
   const { i18n, t } = useTranslation();
   const locale = isSupportedLocale(i18n.resolvedLanguage)
     ? i18n.resolvedLanguage
     : "en";
   const initials = getInitials(currentUser?.fullName ?? currentUser?.email ?? "User");
   const organizations = currentUser?.organizations ?? [];
-  const selectedOrganization = organizations[0] ?? null;
+  const selectedOrganization =
+    organizations.find((organization) => organization.id === activeOrganizationId) ??
+    organizations[0] ??
+    null;
 
   return (
     <header className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center">
@@ -45,15 +56,27 @@ export function Header({ onMenuClick }: HeaderProps) {
         rounded
       />
 
-      <AppDropdown
-        className="h-11 md:w-60"
-        disabled={organizations.length <= 1}
-        itemTemplate={organizationOptionTemplate}
-        optionLabel="name"
-        options={organizations}
-        placeholder={t("header.noWorkspace")}
-        value={selectedOrganization}
-      />
+      <div className="flex gap-2 md:w-76">
+        <AppDropdown
+          className="h-11 min-w-0 flex-1"
+          disabled={organizations.length <= 1}
+          itemTemplate={organizationOptionTemplate}
+          optionLabel="name"
+          options={organizations}
+          onChange={(event) => setActiveOrganizationId(event.value.id)}
+          placeholder={t("header.noWorkspace")}
+          value={selectedOrganization}
+        />
+        <Button
+          aria-label={t("workspace.create.title")}
+          className="h-11 w-11 shrink-0"
+          icon="pi pi-plus"
+          onClick={() => setIsCreateWorkspaceOpen(true)}
+          outlined
+          rounded
+          type="button"
+        />
+      </div>
 
       <div className="flex h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">
         <i
@@ -93,6 +116,10 @@ export function Header({ onMenuClick }: HeaderProps) {
           rounded
         />
       </div>
+      <CreateWorkspaceDialog
+        onHide={() => setIsCreateWorkspaceOpen(false)}
+        visible={isCreateWorkspaceOpen}
+      />
     </header>
   );
 }
