@@ -1,26 +1,18 @@
 import { Avatar } from "primereact/avatar";
 import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { isSupportedLocale, type Locale } from "../../i18n/i18n";
+import type { AuthOrganization } from "../../types/auth";
 import { AppDropdown } from "../ui/AppDropdown";
-
-const workspaces = [
-  { name: "Acme Cloud", code: "acme" },
-  { name: "Northstar Health", code: "northstar" },
-  { name: "Atlas Cloud", code: "atlas" },
-];
 
 const localeOptions: { label: string; value: Locale }[] = [
   { label: "EN", value: "en" },
   { label: "FR", value: "fr" },
 ];
 
-type Workspace = (typeof workspaces)[number];
-
-function workspaceOptionTemplate(option: Workspace) {
+function organizationOptionTemplate(option: AuthOrganization) {
   return (
     <span className="block text-sm font-semibold text-slate-700">
       {option.name}
@@ -33,13 +25,14 @@ type HeaderProps = {
 };
 
 export function Header({ onMenuClick }: HeaderProps) {
-  const [selectedWorkspace, setSelectedWorkspace] = useState(workspaces[0]);
   const { currentUser, logoutUser } = useAuth();
   const { i18n, t } = useTranslation();
   const locale = isSupportedLocale(i18n.resolvedLanguage)
     ? i18n.resolvedLanguage
     : "en";
   const initials = getInitials(currentUser?.fullName ?? currentUser?.email ?? "User");
+  const organizations = currentUser?.organizations ?? [];
+  const selectedOrganization = organizations[0] ?? null;
 
   return (
     <header className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm md:flex-row md:items-center">
@@ -54,11 +47,12 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       <AppDropdown
         className="h-11 md:w-60"
-        itemTemplate={workspaceOptionTemplate}
+        disabled={organizations.length <= 1}
+        itemTemplate={organizationOptionTemplate}
         optionLabel="name"
-        options={workspaces}
-        value={selectedWorkspace}
-        onChange={(event) => setSelectedWorkspace(event.value)}
+        options={organizations}
+        placeholder={t("header.noWorkspace")}
+        value={selectedOrganization}
       />
 
       <div className="flex h-11 min-w-64 flex-1 items-center gap-3 rounded-lg border border-slate-300 bg-white px-3">

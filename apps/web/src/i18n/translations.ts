@@ -11,6 +11,7 @@ const en = {
   "layout.mainNavigation": "Main navigation",
   "layout.toggleNavigation": "Toggle navigation",
   "header.notifications": "Notifications",
+  "header.noWorkspace": "No workspace",
   "header.searchPlaceholder": "Search feedback, features, releases...",
   "language.label": "Language",
   "language.english": "English",
@@ -362,6 +363,7 @@ const fr = {
   "layout.mainNavigation": "Navigation principale",
   "layout.toggleNavigation": "Afficher la navigation",
   "header.notifications": "Notifications",
+  "header.noWorkspace": "Aucun espace",
   "header.searchPlaceholder":
     "Rechercher des retours, fonctionnalites, versions...",
   "language.label": "Langue",
