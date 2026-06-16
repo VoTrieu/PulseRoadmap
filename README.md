@@ -253,12 +253,18 @@ http://127.0.0.1:5173/
 
 ### Demo Account
 
-After migrations and app startup, the backend seed creates a demo workspace account:
+After migrations and app startup, the backend seed creates demo workspace accounts:
 
 ```text
 Email: demo@pulseroadmap.dev
 Password: password123
 Organization: Acme Cloud
+Role: Owner
+
+Email: admin@test.com
+Password: Pa$$w0rd
+Organization: Acme Cloud
+Role: Admin
 ```
 
 You can also register a new user from the app login screen.

@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.rbac import ROLE_ADMIN, ROLE_OWNER
 from app.core.security import hash_password
 from app.data.db.session import engine
 from app.data.bug_sample_data import bug_reports
@@ -14,6 +15,8 @@ from app.data.models.release import Release
 DEMO_ORGANIZATION_ID = "org-demo"
 DEMO_USER_ID = "user-demo"
 DEMO_MEMBERSHIP_ID = "mem-demo"
+ADMIN_USER_ID = "user-admin"
+ADMIN_MEMBERSHIP_ID = "mem-admin"
 
 
 def seed_demo_auth(db: Session) -> str:
@@ -46,9 +49,34 @@ def seed_demo_auth(db: Session) -> str:
                 id=DEMO_MEMBERSHIP_ID,
                 organization_id=DEMO_ORGANIZATION_ID,
                 user_id=DEMO_USER_ID,
-                role="Owner",
+                role=ROLE_OWNER,
             )
         )
+
+    admin_user = db.get(User, ADMIN_USER_ID)
+
+    if admin_user is None:
+        admin_user = User(
+            id=ADMIN_USER_ID,
+            email="admin@test.com",
+            full_name="Admin User",
+            hashed_password=hash_password("Pa$$w0rd"),
+        )
+        db.add(admin_user)
+
+    admin_membership = db.get(OrganizationMember, ADMIN_MEMBERSHIP_ID)
+
+    if admin_membership is None:
+        db.add(
+            OrganizationMember(
+                id=ADMIN_MEMBERSHIP_ID,
+                organization_id=DEMO_ORGANIZATION_ID,
+                user_id=ADMIN_USER_ID,
+                role=ROLE_ADMIN,
+            )
+        )
+    elif admin_membership.role != ROLE_ADMIN:
+        admin_membership.role = ROLE_ADMIN
 
     db.commit()
 
