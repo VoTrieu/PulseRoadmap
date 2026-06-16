@@ -2,7 +2,7 @@
 
 PulseRoadmap is a full-stack B2B SaaS-style product operations platform for product teams. It helps SaaS teams collect customer feedback, triage product requests, plan roadmap work, and track feature priorities in one internal tool.
 
-The project is being built as a portfolio-grade product engineering project with a React frontend, FastAPI backend, PostgreSQL database, typed API boundaries, reusable UI components, pagination, filtering, and internationalization.
+The project is being built as a portfolio-grade product engineering project with a React frontend, FastAPI backend, PostgreSQL database, JWT auth, multi-tenant workspaces, role-based access control, typed API boundaries, reusable UI components, pagination, filtering, CI, and internationalization.
 
 ## Screenshots
 
@@ -35,6 +35,17 @@ The project is being built as a portfolio-grade product engineering project with
 ![AI Assistant](docs/images/ai-assistant.png)
 
 ## Current Features
+
+### Auth, Workspaces, and RBAC
+
+- JWT-based register, login, logout, and current-user session flow
+- Multi-tenant organizations/workspaces backed by `users`, `organizations`, and `organization_members`
+- Workspace creation from the app header
+- Active workspace switching with tenant-scoped API requests using `X-Organization-Id`
+- Product data scoped by organization across feedback, roadmap, bugs, releases, analytics, and AI context
+- Role-based access control using organization roles: Owner, Admin, Member
+- Owner/Admin can create, update, and delete product data
+- Member can read product data but cannot perform write operations
 
 ### Dashboard
 
@@ -132,6 +143,7 @@ The project is being built as a portfolio-grade product engineering project with
 - Docker Compose for PostgreSQL
 - Environment-based configuration
 - REST API integration between frontend and backend
+- GitHub Actions CI for backend tests and frontend build
 
 ## Architecture Overview
 
@@ -161,6 +173,7 @@ apps/
       services/            Axios API services
       types/               TypeScript domain and API types
 docs/                      Planning notes
+.github/workflows/         CI workflow definitions
 infra/                     Future deployment infrastructure
 ```
 
@@ -238,6 +251,18 @@ Frontend URL:
 http://127.0.0.1:5173/
 ```
 
+### Demo Account
+
+After migrations and app startup, the backend seed creates a demo workspace account:
+
+```text
+Email: demo@pulseroadmap.dev
+Password: password123
+Organization: Acme Cloud
+```
+
+You can also register a new user from the app login screen.
+
 ## Useful Commands
 
 ### Frontend Build
@@ -259,6 +284,21 @@ cd apps/api
 ```bash
 cd apps/api
 .venv/bin/python -m unittest discover -s tests
+```
+
+### CI Checks
+
+GitHub Actions runs the same core checks on push and pull request:
+
+```text
+Backend tests
+Frontend build
+```
+
+Workflow file:
+
+```text
+.github/workflows/ci.yml
 ```
 
 ### Create Alembic Migration
@@ -288,6 +328,15 @@ cd apps/api
 
 ## API Routes
 
+Most `/api/*` routes require a bearer token. Workspace-scoped product routes can also receive the active workspace header:
+
+```text
+Authorization: Bearer <access_token>
+X-Organization-Id: <organization_id>
+```
+
+If `X-Organization-Id` is omitted, the backend uses the user's first organization membership.
+
 ### Health
 
 ```text
@@ -303,6 +352,8 @@ GET    /api/feedback/{feedback_id}
 PATCH  /api/feedback/{feedback_id}
 DELETE /api/feedback/{feedback_id}
 ```
+
+Write operations require Owner or Admin role.
 
 `GET /api/feedback` supports:
 
@@ -324,6 +375,8 @@ PATCH  /api/roadmap/{feature_id}
 DELETE /api/roadmap/{feature_id}
 ```
 
+Write operations require Owner or Admin role.
+
 ### Bugs
 
 ```text
@@ -333,6 +386,8 @@ PATCH  /api/bugs/{bug_id}
 DELETE /api/bugs/{bug_id}
 ```
 
+Write operations require Owner or Admin role.
+
 ### Releases
 
 ```text
@@ -341,6 +396,24 @@ POST   /api/releases
 PATCH  /api/releases/{release_id}
 DELETE /api/releases/{release_id}
 ```
+
+Write operations require Owner or Admin role.
+
+### Auth
+
+```text
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
+```
+
+### Organizations
+
+```text
+POST /api/organizations
+```
+
+Creates a new workspace and adds the current user as Owner.
 
 ### AI Assistant
 
@@ -366,6 +439,7 @@ PULSEROADMAP_OPENAI_MODEL="gpt-5.2"
 ## Engineering Highlights
 
 - Built a full-stack SaaS-style product operations platform using React, FastAPI, PostgreSQL, and Docker Compose.
+- Implemented JWT authentication, multi-tenant workspace switching, tenant-scoped product data, and role-based access control for Owner/Admin/Member permissions.
 - Implemented typed frontend/backend data boundaries with TypeScript types, Pydantic schemas, and centralized mapper functions.
 - Integrated TanStack Query and Axios for API state management, caching, mutation invalidation, loading states, and centralized error handling.
 - Designed reusable UI components for cards, page headers, dropdowns, paginated tables, dialogs, loading states, error states, and layout.
@@ -373,29 +447,30 @@ PULSEROADMAP_OPENAI_MODEL="gpt-5.2"
 - Added PostgreSQL persistence with SQLAlchemy models, repository pattern, Alembic migrations, and environment-based database configuration.
 - Added English/French internationalization using react-i18next with type-safe translation keys.
 - Added AI-assisted product brief generation with local and OpenAI provider paths behind a backend provider boundary.
+- Added GitHub Actions CI for backend tests, migrations, and frontend production build.
 - Applied clean architecture separation across routes, schemas, repositories, models, services, mappers, queries, and UI components.
 
 ## CV Summary
 
 **PulseRoadmap - Full-Stack Product Operations Platform**
 
-Built a B2B SaaS-style product operations platform for managing customer feedback, roadmap planning, bug triage, release management, product analytics, and AI-assisted product briefs. Developed a React + TypeScript frontend with PrimeReact, Tailwind CSS, React Router, TanStack Query, Axios, and react-i18next. Built a FastAPI backend with Pydantic, SQLAlchemy 2.0, Alembic, PostgreSQL, and Docker Compose. Implemented CRUD APIs, server-side filtering, pagination, reusable UI components, typed API mapping, centralized error handling, English/French localization, backend tests, and configurable AI providers.
+Built a B2B SaaS-style product operations platform for managing customer feedback, roadmap planning, bug triage, release management, product analytics, and AI-assisted product briefs. Developed a React + TypeScript frontend with PrimeReact, Tailwind CSS, React Router, TanStack Query, Axios, and react-i18next. Built a FastAPI backend with Pydantic, SQLAlchemy 2.0, Alembic, PostgreSQL, and Docker Compose. Implemented JWT auth, multi-tenant workspaces, active workspace switching, RBAC, CRUD APIs, server-side filtering, pagination, reusable UI components, typed API mapping, centralized error handling, English/French localization, backend tests, GitHub Actions CI, and configurable AI providers.
 
 ## Suggested CV Bullet Points
 
 - Built a full-stack product operations SaaS application using React, TypeScript, FastAPI, PostgreSQL, SQLAlchemy, Alembic, and Docker Compose.
+- Implemented JWT authentication, multi-tenant organizations, active workspace switching, tenant-scoped data access, and Owner/Admin/Member role-based authorization.
 - Implemented customer feedback, roadmap, bug triage, and release management workflows with server-side search, filtering, pagination, reusable form dialogs, and API mutation invalidation using TanStack Query.
 - Designed typed API integration layers with Axios services, TypeScript domain/API types, Pydantic schemas, and mapper functions between snake_case backend data and camelCase frontend models.
 - Built an AI-assisted product brief workflow with local and OpenAI provider implementations, structured output parsing, environment-based provider selection, and backend service/route tests.
 - Added internationalization with react-i18next, supporting English/French translations and type-safe translation keys.
+- Added GitHub Actions CI to run backend tests and frontend production builds on push and pull request.
 - Structured the codebase with clean separation of concerns across frontend components/pages/queries/services and backend routes/schemas/repositories/models.
 
 ## Next Planned Work
 
 - Link feedback records to roadmap features.
-- Add authentication and organization/workspace support.
-- Add role-based access control and workspace-level permissions.
 - Add file attachments for feedback and bug reports.
 - Add notifications and background jobs for release/change events.
 - Add stronger analytics filtering and export workflows.
-- Add CI checks for frontend build, backend compile, and backend tests.
+- Add production deployment configuration.
