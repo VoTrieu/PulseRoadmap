@@ -8,6 +8,8 @@ from app.data.db.session import get_db
 from app.data.models.auth import OrganizationMember, User
 from app.data.repositories import auth_repository
 
+OrganizationRole = str
+
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
@@ -42,31 +44,32 @@ def get_current_user(
     return user
 
 
-def get_current_organization_id(
+def get_current_organization_membership(
     current_user: User = Depends(get_current_user),
     requested_organization_id: str | None = Header(
         default=None,
         alias="X-Organization-Id",
     ),
-) -> str:
+) -> OrganizationMember:
     if requested_organization_id is not None:
-        has_membership = any(
-            membership.organization_id == requested_organization_id
-            for membership in current_user.memberships
+        membership = next(
+            (
+                membership
+                for membership in current_user.memberships
+                if membership.organization_id == requested_organization_id
+            ),
+            None,
         )
 
-        if not has_membership:
+        if membership is None:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="User does not belong to the requested organization",
             )
 
-        return requested_organization_id
+        return membership
 
-    membership: OrganizationMember | None = next(
-        iter(current_user.memberships),
-        None,
-    )
+    membership = next(iter(current_user.memberships), None)
 
     if membership is None:
         raise HTTPException(
@@ -74,4 +77,25 @@ def get_current_organization_id(
             detail="User does not belong to an organization",
         )
 
+    return membership
+
+
+def get_current_organization_id(
+    membership: OrganizationMember = Depends(get_current_organization_membership),
+) -> str:
     return membership.organization_id
+
+
+def require_organization_roles(*allowed_roles: OrganizationRole):
+    def dependency(
+        membership: OrganizationMember = Depends(get_current_organization_membership),
+    ) -> OrganizationMember:
+        if membership.role not in allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Insufficient organization permissions",
+            )
+
+        return membership
+
+    return dependency

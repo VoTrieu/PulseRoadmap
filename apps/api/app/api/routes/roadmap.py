@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_organization_id
+from app.api.dependencies import get_current_organization_id, require_organization_roles
+from app.core.rbac import WRITE_ORGANIZATION_ROLES
 from app.schemas.roadmap import (
     RoadmapFeatureCreate,
     RoadmapFeatureItem,
@@ -40,6 +41,7 @@ def list_features(
 def create_feature(
     payload: RoadmapFeatureCreate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> RoadmapFeatureItem:
     return roadmap_repository.create_feature(db, organization_id, payload)
@@ -64,6 +66,7 @@ def update_feature(
     feature_id: str,
     payload: RoadmapFeatureUpdate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> RoadmapFeatureItem:
     feature = roadmap_repository.update_feature(db, organization_id, feature_id, payload)
@@ -78,6 +81,7 @@ def update_feature(
 def delete_feature(
     feature_id: str,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> Response:
     was_deleted = roadmap_repository.delete_feature(db, organization_id, feature_id)

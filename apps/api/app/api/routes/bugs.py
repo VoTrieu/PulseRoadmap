@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_organization_id
+from app.api.dependencies import get_current_organization_id, require_organization_roles
 from app.core.pagination import paginate
+from app.core.rbac import WRITE_ORGANIZATION_ROLES
 from app.data.db.session import get_db
 from app.data.repositories import bug_repository
 from app.schemas.bug import (
@@ -39,6 +40,7 @@ def list_bugs(
 def create_bug(
     payload: BugReportCreate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> BugReportItem:
     return bug_repository.create_bug(db, organization_id, payload)
@@ -63,6 +65,7 @@ def update_bug(
     bug_id: str,
     payload: BugReportUpdate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> BugReportItem:
     bug = bug_repository.update_bug(db, organization_id, bug_id, payload)
@@ -77,6 +80,7 @@ def update_bug(
 def delete_bug(
     bug_id: str,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> Response:
     was_deleted = bug_repository.delete_bug(db, organization_id, bug_id)

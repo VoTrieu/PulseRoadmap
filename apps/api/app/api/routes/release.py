@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_organization_id
+from app.api.dependencies import get_current_organization_id, require_organization_roles
 from app.core.pagination import paginate
+from app.core.rbac import WRITE_ORGANIZATION_ROLES
 from app.data.db.session import get_db
 from app.data.repositories import release_repository
 from app.schemas.release import (
@@ -46,6 +47,7 @@ def list_releases(
 def create_release(
     payload: ReleaseCreate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> ReleaseItem:
     return release_repository.create_release(db, organization_id, payload)
@@ -70,6 +72,7 @@ def update_release(
     release_id: str,
     payload: ReleaseUpdate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> ReleaseItem:
     release = release_repository.update_release(
@@ -86,6 +89,7 @@ def update_release(
 def delete_release(
     release_id: str,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> Response:
     was_deleted = release_repository.delete_release(db, organization_id, release_id)

@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
-from app.api.dependencies import get_current_organization_id
+from app.api.dependencies import get_current_organization_id, require_organization_roles
+from app.core.rbac import WRITE_ORGANIZATION_ROLES
 from app.core.pagination import paginate
 from app.data.db.session import get_db
 from app.data.repositories import feedback_repository
@@ -43,6 +44,7 @@ def list_feedback(
 def create_feedback(
     payload: FeedbackCreate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> FeedbackItem:
     return feedback_repository.create_feedback(db, organization_id, payload)
@@ -68,6 +70,7 @@ def get_feedback_by_id(
 def delete_feedback(
     feedback_id: str,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> Response:
     was_deleted = feedback_repository.delete_feedback(db, organization_id, feedback_id)
@@ -83,6 +86,7 @@ def update_feedback(
     feedback_id: str,
     payload: FeedbackUpdate,
     organization_id: str = Depends(get_current_organization_id),
+    _membership=Depends(require_organization_roles(*WRITE_ORGANIZATION_ROLES)),
     db: Session = Depends(get_db),
 ) -> FeedbackItem:
     feedback = feedback_repository.update_feedback(
