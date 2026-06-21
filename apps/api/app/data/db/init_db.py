@@ -11,6 +11,7 @@ from app.data.models.auth import Organization, OrganizationMember, User
 from app.data.models.bug import BugReport
 from app.data.models.feedback import Feedback
 from app.data.models.release import Release
+from app.core.config import settings
 
 DEMO_ORGANIZATION_ID = "org-demo"
 DEMO_USER_ID = "user-demo"
@@ -120,6 +121,9 @@ def seed_releases(db: Session, organization_id: str) -> None:
     db.commit()
 
 def init_db() -> None:
+    if not settings.seed_demo_data:
+        return
+    
     with Session(engine) as db:
         organization_id = seed_demo_auth(db)
         seed_feedbacks(db, organization_id)

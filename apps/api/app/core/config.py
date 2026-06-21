@@ -16,6 +16,7 @@ class Settings(BaseSettings):
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ]
+    seed_demo_data: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", env_prefix="PULSEROADMAP_")
 
