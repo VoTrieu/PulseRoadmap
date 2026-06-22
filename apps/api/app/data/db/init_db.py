@@ -114,10 +114,11 @@ def seed_releases(db: Session, organization_id: str) -> None:
     if has_release:
         return
 
-    db.add_all(
-        Release(organization_id=organization_id, **release.model_dump())
-        for release in release_items
-    )
+    for release in release_items:
+        release.organization_id = organization_id
+
+    db.add_all(release_items)
+
     db.commit()
 
 def init_db() -> None:
